@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mentoring status</title>
+<link rel="stylesheet" href="_ds/new-design-system-093b667a-136f-4587-b18b-a9af51b17538/tokens/fonts.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap">
+<style>
+  /* Colours from packages/ui/src/styles/theme.css on origin/master */
+  :root{
+    --primary:#ff5d18;--primary-400:#ff9a5c;--primary-500:#ff8b45;--primary-50:#ffe8d9;--sidebar-active:#ffefe8;
+    --gray-50:#f9f9f9;--gray-200:#e8e8e8;--gray-400:#c4c4c4;--gray-500:#8d8d8d;--gray-950:#0a0a0a;
+    --slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--slate-300:#cbd5e1;--slate-400:#94a3b8;--slate-500:#64748b;--slate-700:#334155;--slate-800:#1e293b;--slate-900:#0f172a;
+    --tg-200:#e5e7eb;--tg-500:#6b7280;--tg-700:#374151;--tg-900:#111827;
+    --border:#e5e7eb;--muted:#f3f4f6;--muted-fg:#6b7280;--destructive:#ff4e45;
+    --cal-orange-50:#ffefe8;--cal-orange-200:#ffb495;--cal-orange-400:#ff7d46;--cal-orange-500:#ff5d18;
+    --cal-yellow-50:#fff5d9;--cal-yellow-500:#eab308;--cal-yellow-600:#eec032;
+    --cal-blue-50:#e7f0fe;--cal-blue-500:#1068f4;--cal-blue-600:#3982f6;
+    --kpi:#ff7a1a;--star:#ff8133;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100vh;overflow:hidden;background:var(--gray-50);font-family:'Inter',ui-sans-serif,system-ui,sans-serif;color:var(--tg-900);-webkit-font-smoothing:antialiased;}
+  button{font:inherit;color:inherit;}
+  a{color:inherit;}
+  .app{display:flex;height:100vh;}
+
+  /* Sidebar (ShellSidebar) */
+  aside{width:320px;flex-shrink:0;background:#fff;border-right:1px solid #eeeef0;display:flex;flex-direction:column;color:#1c1d1c;}
+  .sb-head{display:flex;align-items:center;gap:8px;padding:18px 14px 2px;}
+  .sb-head img{height:36px;width:auto;}
+  .sb-collapse{margin-left:auto;border:0;background:none;border-radius:6px;padding:6px;color:rgba(28,29,28,.4);display:inline-flex;cursor:pointer;}
+  .sb-collapse:hover{background:#f4f4f5;}
+  .sb-nav{flex:1;display:flex;flex-direction:column;gap:14px;padding:14px 14px 8px;overflow-y:auto;}
+  .grp{display:flex;align-items:center;gap:10px;width:100%;padding:8px 8px 8px 10px;border:0;background:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;text-align:left;}
+  .grp:hover{background:#f4f4f5;}
+  .grp .ico{color:rgba(28,29,28,.55);display:inline-flex;}
+  .grp .chev{margin-left:auto;color:rgba(28,29,28,.35);display:inline-flex;transition:transform .15s;}
+  .grp.closed .chev{transform:rotate(-90deg);}
+  .navlink{display:block;width:100%;margin-top:2px;padding:6px 10px 6px 36px;border:0;background:none;border-radius:6px;font-size:13px;color:rgba(28,29,28,.75);cursor:pointer;text-align:left;}
+  .navlink:hover{background:#f4f4f5;}
+  .navlink.on{background:var(--sidebar-active);color:var(--primary);font-weight:600;}
+  .sb-foot{position:relative;border-top:1px solid #eeeef0;padding:14px;}
+  .userbtn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 38px 8px 8px;border:0;background:none;border-radius:6px;cursor:pointer;text-align:left;}
+  .userbtn:hover{background:#f4f4f5;}
+  .userbtn b{display:block;font-size:13px;line-height:16px;font-weight:500;}
+  .userbtn small{display:block;font-size:11px;line-height:16px;color:var(--muted-fg);}
+  .bell{position:absolute;right:22px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:0;background:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:#1c1d1c;}
+  .bell:hover{background:#f4f4f5;}
+  .bell i{position:absolute;top:-2px;right:-2px;min-width:16px;padding:2px 4px;border-radius:99px;background:var(--destructive);color:#fff;font-size:10px;font-weight:600;font-style:normal;line-height:1;box-shadow:0 0 0 2px #fff;}
+  .menu{position:absolute;bottom:calc(100% - 4px);left:14px;right:14px;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:6px;z-index:30;}
+  .menu-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:6px;border:0;background:none;cursor:pointer;font-size:13px;text-align:left;}
+  .menu-item:hover{background:#f4f4f5;}
+  .menu-sep{height:1px;background:var(--border);margin:4px 0;}
+  .menu-status{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;text-align:left;font-size:13px;color:var(--tg-500);}
+  .menu-status:hover{background:var(--gray-50);}
+  .menu-status .e{font-size:17px;width:22px;text-align:center;}
+
+  /* Avatars */
+  .av{position:relative;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--muted);color:var(--muted-fg);font-weight:500;flex-shrink:0;}
+  .av-ph{position:absolute;inset:0;border-radius:50%;overflow:hidden;}
+  .av-ph img{width:100%;height:100%;object-fit:cover;display:block;}
+  .av-mood{position:absolute;right:-4px;bottom:-3px;width:46%;height:46%;min-width:17px;min-height:17px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--border);display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+  .av-ok{position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:#22c55e;border:2px solid #fff;color:#fff;display:inline-flex;align-items:center;justify-content:center;}
+
+  /* Main + header (ShellPageHeader) */
+  main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .page-head{min-height:80px;flex-shrink:0;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;}
+  .page-head h1{margin:0;display:flex;align-items:center;gap:12px;font-size:24px;font-weight:600;}
+  .tile{width:40px;height:40px;border-radius:39%;background:var(--primary);color:#fff;display:inline-flex;align-items:center;justify-content:center;}
+  .scroll{flex:1;overflow-y:auto;}
+  .frame{max-width:1280px;margin:0 auto;padding:32px 32px 120px;display:flex;flex-direction:column;gap:16px;}
+
+  /* Shared blocks */
+  .card2{background:#fff;border:1px solid var(--slate-200);border-radius:16px;box-shadow:0 1px 2px rgba(0,0,0,.05);}
+  .block{background:#fff;padding:24px;}
+  .block h2{margin:0 0 20px;font-size:16px;font-weight:600;color:var(--tg-900);}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;box-shadow:0 1px 1px rgba(0,0,0,.1);}
+  .btn:hover{background:var(--gray-50);}
+  .btn.join{background:var(--cal-orange-500);border-color:var(--cal-orange-500);color:#fff;box-shadow:none;border-radius:6px;padding:0 16px;}
+  .btn.join:hover{filter:brightness(.95);}
+  .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:none;}
+  .btn.primary:hover{filter:brightness(.95);}
+  .btn.ghost{border-color:transparent;box-shadow:none;background:none;}
+  .btn.ghost:hover{background:var(--gray-50);}
+  .btn.sm{height:30px;padding:0 10px;font-size:13px;}
+  .btn.danger{color:#e3342f;}
+  .btn[disabled]{opacity:.5;cursor:not-allowed;}
+  .link{color:var(--primary);font-weight:500;cursor:pointer;background:none;border:0;padding:0;font-size:13px;}
+  .link:hover{text-decoration:underline;}
+  .muted{color:var(--muted-fg);}
+
+  /* Mood chip (counterpart status, opens the status popover) */
+  .mood{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px 0 6px;border-radius:999px;border:1px solid var(--border);background:#fff;font-size:12px;font-weight:400;color:var(--tg-700);cursor:pointer;white-space:nowrap;max-width:260px;vertical-align:middle;}
+  .mood:hover{border-color:var(--primary-400);background:var(--sidebar-active);}
+  .mood .e{font-size:14px;line-height:1;}
+  .mood span{overflow:hidden;text-overflow:ellipsis;}
+  .mood.icon{padding:0 5px;}
+
+  /* Micro endorsements */
+  .endos{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .endos.stack{flex-direction:column;align-items:center;margin-top:16px;width:160px;}
+  .endo{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px 0 8px;border-radius:999px;border:1px solid #fde68a;background:#fffbeb;color:#92400e;font-size:12px;font-weight:500;white-space:nowrap;}
+  .endo .e{font-size:13px;line-height:1;}
+  .endo{max-width:300px;}
+  .endo .lbl-t{overflow:hidden;text-overflow:ellipsis;}
+  .endos.stack .endo{max-width:200px;}
+  .xp-note{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--tg-500);}
+  .xp-note b{color:#047857;}
+  .xp-earned{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;height:28px;padding:0 12px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:13px;font-weight:600;}
+  .xp-earned.muted-pill{background:var(--muted);color:var(--muted-fg);font-weight:500;}
+  .lvlup{text-align:center;}
+  .lvlup .big{font-size:44px;line-height:1;}
+  .lvlup h3{margin-top:10px !important;font-size:22px !important;}
+  .endo.add{cursor:pointer;border-style:dashed;border-color:var(--slate-300);background:#fff;color:var(--slate-500);padding:0 10px;}
+  .endo.add:hover{border-color:var(--primary-400);color:var(--primary);}
+
+  /* Compact crumbs (sub-pages) */
+  .crumbs{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted-fg);}
+  .crumbs .tile{width:28px;height:28px;}
+  .crumbs a{cursor:pointer;}
+  .crumbs a:hover{color:var(--tg-900);text-decoration:underline;}
+  .crumbs b{color:var(--tg-900);font-weight:600;}
+  .back{align-self:flex-start;border:0;background:none;padding:0;font-size:14px;color:var(--tg-700);cursor:pointer;}
+  .back:hover{text-decoration:underline;}
+
+  /* "How are you today?" */
+  .checkin{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:18px 24px;}
+  .checkin h2{margin:0 0 2px;font-size:16px;font-weight:600;}
+  .checkin p{margin:0;font-size:13px;color:var(--slate-500);}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;}
+  .qbtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--slate-200);background:#fff;font-size:20px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:transform .12s;}
+  .qbtn:hover{transform:translateY(-2px);border-color:var(--primary-400);background:var(--sidebar-active);}
+  .qbtn.more{font-size:13px;font-weight:500;color:var(--slate-500);width:auto;padding:0 12px;}
+  .mine{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+  .mine .big{width:48px;height:48px;border-radius:14px;background:var(--sidebar-active);display:inline-flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+
+  /* MenteeOverviewCard */
+  .hero{padding:24px;}
+  .who{display:flex;align-items:center;gap:28px;}
+  .who h2{margin:0;font-size:20px;font-weight:600;color:var(--slate-900);}
+  .role-badge{display:inline-block;margin-top:4px;border:1px solid var(--slate-300);border-radius:6px;padding:2px 8px;font-size:12px;font-weight:500;color:var(--slate-700);}
+  .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;margin-top:22px;align-items:center;}
+  .kpi-l{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-500);white-space:nowrap;}
+  .kpi-l svg{color:var(--slate-400);flex-shrink:0;}
+  .kpi-v{margin-top:10px;font-size:24px;line-height:1;font-weight:600;color:var(--kpi);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .kpi-v a{cursor:pointer;text-decoration:none;}
+  .kpi-v a:hover{text-decoration:underline;}
+  .body2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid var(--slate-200);}
+  .body2 > section{padding:24px;}
+  .body2 > section + section{border-left:1px solid var(--slate-200);}
+  .body2 h3{margin:0 0 16px;font-size:14px;font-weight:600;color:var(--slate-900);}
+  dl.info{display:grid;grid-template-columns:auto 1fr;gap:12px 12px;margin:0;font-size:14px;}
+  dl.info dt{display:flex;align-items:center;gap:8px;font-weight:500;color:var(--slate-500);white-space:nowrap;}
+  dl.info dt svg{color:var(--slate-400);}
+  dl.info dd{margin:0;color:var(--slate-900);min-width:0;overflow-wrap:anywhere;}
+  .tag{display:inline-block;border:1px solid var(--slate-200);background:var(--slate-100);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:500;}
+  .prog-h{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;margin-bottom:14px;}
+  dl.prog{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0;font-size:14px;}
+  dl.prog dt{color:var(--slate-500);}
+  dl.prog dd{margin:0;}
+
+  /* Upcoming event card (upcoming-event-card.svelte) */
+  .events{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .ev{border:2px solid var(--gray-200);border-radius:12px;background:#fff;padding:12px;}
+  .ev-row{display:flex;align-items:center;gap:12px;}
+  .dtile{width:100px;height:100px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0;background:var(--cal-blue-50);color:var(--cal-blue-500);}
+  .dtile b{font-size:36px;line-height:1;font-weight:600;}
+  .dtile span{font-size:20px;line-height:1;text-transform:uppercase;}
+  .ev-mid{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
+  .ev-l1{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .tchip{padding:4px 8px;font-size:12px;border-radius:4px;background:var(--cal-blue-50);color:var(--cal-blue-500);}
+  .ev-time{font-size:14px;color:var(--muted-fg);}
+  .dur{border:1px solid var(--gray-400);background:#fff;border-radius:4px;padding:2px 6px;font-size:12px;color:var(--tg-700);}
+  .ev-l2{display:flex;gap:8px;flex-wrap:wrap;}
+  .att{display:flex;align-items:center;gap:10px;border-radius:8px;background:var(--gray-50);padding:6px 10px 6px 8px;font-size:14px;}
+  .att small{font-size:12px;color:var(--gray-500);}
+  .ev-act{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+  .opener{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 12px;border-radius:8px;background:#fff7ed;font-size:13px;color:var(--tg-700);}
+  .opener .e{font-size:18px;line-height:1;}
+  .opener q{font-weight:500;color:var(--tg-900);}
+  .empty{border:2px solid var(--gray-200);border-radius:12px;padding:24px;text-align:center;font-size:14px;color:var(--gray-500);}
+  .past .ev{opacity:.6;}
+  .sec-toggle{border:0;background:none;padding:0;cursor:pointer;color:inherit;font:inherit;display:inline-flex;align-items:center;gap:6px;}
+  .sec-toggle .chev{display:inline-flex;color:var(--muted-fg);transition:transform .15s;}
+  .sec-toggle.closed .chev{transform:rotate(-90deg);}
+  .sec-h{display:flex;align-items:center;gap:6px;margin:0 0 20px;font-size:16px;font-weight:600;}
+
+  /* MentorInfo */
+  .mentor-info{display:flex;gap:48px;align-items:flex-start;}
+  .mentor-info h3{margin:0;font-size:24px;line-height:28px;font-weight:500;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .mentor-info dl{margin:16px 0 0;display:flex;flex-direction:column;gap:8px;font-size:15px;}
+  .mentor-info dt{font-weight:500;display:inline;}
+  .mentor-info dd{display:inline;margin:0;}
+
+  /* WelcomeCard */
+  .welcome{display:flex;gap:8px;padding:24px;background:#fff;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.05);}
+  .welcome .left{display:flex;flex-direction:column;gap:24px;flex:1;}
+  .welcome .hi{display:flex;align-items:center;gap:12px;}
+  .welcome .hi small{display:block;font-size:14px;color:var(--tg-500);}
+  .welcome .hi b{display:block;font-size:30px;font-weight:300;line-height:1.2;}
+  .wgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}
+  .wgrid .lbl{font-size:14px;color:var(--tg-500);margin-bottom:6px;}
+  .wline{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:4px;}
+  .wline b{font-weight:600;}
+  .wline span{color:var(--tg-500);}
+  .rating{display:flex;flex-direction:column;gap:8px;}
+  .stars{display:flex;align-items:center;gap:12px;font-size:14px;}
+  .stars i{color:var(--star);font-style:normal;font-size:20px;letter-spacing:6px;}
+  .bar-l{font-size:12px;color:var(--tg-500);}
+  .bar{display:flex;align-items:center;gap:10px;font-size:12px;}
+  .bar span{display:block;width:192px;height:8px;border-radius:99px;background:var(--tg-200);overflow:hidden;}
+  .bar span i{display:block;height:100%;background:#e8590c;border-radius:99px;}
+  .alert-chem{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:8px;background:#ffedd5;color:#e8590c;font-size:16px;line-height:1.5;}
+  .alert-chem a{text-decoration:underline;font-weight:600;cursor:pointer;}
+  .alert-chem button{margin-left:auto;border:0;background:none;color:inherit;cursor:pointer;display:inline-flex;padding:2px;}
+
+  /* SchedulingCalendar */
+  .cal{display:flex;flex-direction:column;gap:16px;}
+  .cal-tb{display:flex;align-items:center;gap:8px;}
+  .ibtn{width:36px;height:36px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
+  .ibtn:hover{background:var(--gray-50);}
+  .cal-month{font-size:16px;font-weight:600;color:var(--gray-950);margin:0 4px;}
+  .today-btn{height:32px;padding:0 14px;font-size:13px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;cursor:pointer;}
+  .tabs{margin-left:auto;display:flex;background:var(--muted);border-radius:8px;padding:3px;height:36px;}
+  .tabs button{border:0;background:none;border-radius:6px;padding:4px 10px;font-size:14px;font-weight:500;color:var(--muted-fg);cursor:pointer;}
+  .tabs button.on{background:#fff;color:var(--tg-900);box-shadow:0 1px 2px rgba(0,0,0,.08);}
+  .legend{display:flex;align-items:center;gap:16px;font-size:14px;flex-wrap:wrap;}
+  .legend b{font-weight:600;}
+  .sw{display:inline-flex;align-items:center;gap:8px;}
+  .sw i{width:20px;height:20px;border-radius:4px;border:1px solid;display:inline-block;}
+  .split{margin-left:auto;display:flex;height:36px;border-radius:6px;background:var(--primary);color:#fff;overflow:hidden;}
+  .split button{border:0;background:none;color:#fff;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+  .split button:first-child{padding:0 10px;}
+  .split button:last-child{padding:0 8px;border-left:1px solid rgba(255,255,255,.2);}
+  .wk{border:1px solid var(--tg-200);border-radius:8px;overflow:hidden;}
+  .wk-head{display:grid;grid-template-columns:64px repeat(7,1fr);border-bottom:1px solid var(--tg-200);}
+  .wk-head div{text-align:center;padding:10px 0;font-size:12px;color:var(--tg-500);text-transform:uppercase;}
+  .wk-head div b{display:flex;align-items:center;justify-content:center;margin:6px auto 0;width:40px;height:40px;border-radius:50%;font-size:20px;font-weight:500;color:var(--tg-700);}
+  .wk-head div.today{color:var(--primary);font-weight:600;}
+  .wk-head div.today b{background:var(--primary);color:#fff;}
+  .wk-body{display:grid;grid-template-columns:64px repeat(7,1fr);height:520px;overflow-y:auto;position:relative;}
+  .wk-hours div{height:52px;font-size:11px;color:var(--tg-500);text-align:right;padding-right:8px;transform:translateY(-6px);}
+  .wk-col{position:relative;border-left:1px solid var(--tg-200);background:repeating-linear-gradient(to bottom,transparent 0,transparent 51px,var(--tg-200) 51px,var(--tg-200) 52px);}
+  .cev{position:absolute;left:3px;right:3px;border-radius:6px;padding:4px 6px;font-size:12px;line-height:16px;display:flex;gap:6px;overflow:hidden;}
+  .cev.avail{font-weight:500;color:var(--gray-950);}
+  .cev.avail i{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;}
+  .cev.booked{background:var(--cal-blue-600);color:#fff;cursor:default;}
+  .cev.booked .bar-w{width:2px;align-self:stretch;background:rgba(255,255,255,.9);border-radius:2px;flex-shrink:0;}
+  .cev.booked b{font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cev .tb{display:inline-block;margin-top:3px;border-radius:4px;background:rgba(255,255,255,.9);color:var(--cal-blue-600);padding:0 4px;font-size:10px;text-transform:uppercase;}
+  .cev .emo{cursor:pointer;border:0;background:rgba(255,255,255,.95);border-radius:99px;font-size:12px;line-height:1;padding:2px 4px;margin-left:2px;}
+
+  /* MyMentees table */
+  .tbl{border:1px solid var(--tg-200);border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.04);overflow:hidden;}
+  .tbl-tb{border-bottom:1px solid var(--tg-200);padding:12px 24px;}
+  .seg{display:inline-flex;border:.5px solid #ccc;border-radius:8px;overflow:hidden;}
+  .seg button{border:0;background:#fff;font-size:13px;font-weight:500;padding:5px 12px;color:#6b7280;cursor:pointer;}
+  .seg button + button{border-left:.5px solid #ccc;}
+  .seg button.on{background:#ff8b45;color:#fff;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  thead{background:var(--gray-50);}
+  th{padding:12px 16px;text-align:left;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--tg-700);}
+  td{padding:12px 16px;border-top:1px solid var(--tg-200);color:var(--tg-900);}
+  .nm{display:flex;align-items:center;gap:16px;}
+  .name-link{cursor:pointer;text-decoration:none;}
+  .name-link:hover{color:var(--primary);text-decoration:underline;}
+
+  /* Library stories (cards follow Pack; the player keeps PackTales' comic look) */
+  .story-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;}
+  .story-card{display:flex;flex-direction:column;border:1px solid var(--slate-200);border-radius:12px;overflow:hidden;background:#fff;}
+  .story-cover{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 30%;background:#f6f0e6;}
+  .story-card.soon .story-cover{filter:grayscale(.35);opacity:.8;}
+  .story-body{display:flex;flex-direction:column;gap:6px;padding:16px;flex:1;}
+  .story-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--primary);}
+  .story-body h3{margin:0;font-size:16px;font-weight:600;}
+  .story-body p{margin:0;font-size:13.5px;color:var(--tg-500);line-height:1.45;}
+  .story-for{font-size:12.5px;color:var(--tg-700);background:var(--gray-50);border-radius:6px;padding:6px 8px;}
+  .story-foot{margin-top:auto;padding-top:10px;}
+  .pill-soon{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;background:var(--muted);color:var(--muted-fg);font-size:12.5px;font-weight:500;}
+
+  .tl-intro{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--slate-200);border-radius:16px;padding:32px;}
+  .tl-intro-cover{width:100%;aspect-ratio:864/1184;object-fit:cover;border:2.5px solid #0e0e0e;border-radius:6px;transform:rotate(-.6deg);}
+  .tl-intro-body{display:flex;flex-direction:column;gap:12px;max-width:620px;}
+  .tl-intro-body h1{margin:0;font-size:34px;line-height:1.15;font-weight:700;}
+  .tl-blurb{margin:0;font-family:'Patrick Hand','Comic Sans MS',cursive;font-size:24px;line-height:1.3;}
+  .tl-preview{margin:0;font-size:13px;color:#9a3412;background:#fff7ed;border-radius:8px;padding:8px 10px;}
+  /* Report language picker: toolbar button (34px, 13px, pack-gray-325 border) + dropdown */
+  .tl-lang-wrap{position:relative;}
+  .tl-bar-end{margin-left:auto;display:flex;align-items:center;gap:8px;}
+  .tl-lang-btn{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border:1px solid #d9d9d9;border-radius:8px;background:#fff;color:#3b3b3b;font-size:13px;font-weight:500;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05);white-space:nowrap;}
+  .tl-lang-btn:hover,.tl-lang-btn[aria-expanded="true"]{background:#f9f9f9;}
+  .tl-lang-menu{position:absolute;right:0;top:calc(100% + 4px);z-index:20;min-width:160px;padding:4px;background:#fff;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1),0 0 0 1px rgba(0,0,0,.08);}
+  .tl-lang-item{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border:0;border-radius:4px;background:none;font-size:14px;color:var(--tg-900);text-align:left;cursor:pointer;}
+  .tl-lang-item:hover,.tl-lang-item:focus{background:#ffe8d9;outline:none;}
+  .tl-lang-check{margin-left:auto;display:inline-flex;}
+
+  .tl-bar{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:14px;margin:-32px -32px 0;padding:14px 32px;background:rgba(249,249,249,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);font-size:14px;}
+  .tl-progress{flex:1;max-width:320px;height:8px;border-radius:99px;background:var(--tg-200);overflow:hidden;}
+  .tl-progress i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .3s;}
+  .tl-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;align-items:stretch;padding-top:8px;}
+  .tl-panel.uniform{display:flex;flex-direction:column;scroll-margin-top:84px;}
+  .tl-panel.uniform .tl-band{min-height:236px;}
+  .tl-panel.uniform .tl-caption{min-height:72px;margin-top:auto;}
+  .tl-caption.empty{background:#fff;}
+  .tl-new-row{grid-column-start:1;}
+  .tl-panel{margin:0;background:#fff;border:2.5px solid #0e0e0e;border-radius:4px;overflow:hidden;transform:rotate(-.25deg);}
+  .tl-panel:nth-child(even){transform:rotate(.25deg);}
+  .tl-panel img{display:block;width:100%;aspect-ratio:1184/864;object-fit:cover;}
+  .tl-band{display:flex;flex-direction:column;gap:12px;padding:14px 14px 6px;background:#fbf7f1;}
+  .tl-caption{padding:10px 14px;border-top:2.5px solid #0e0e0e;background:#ffe8d9;font-family:'Patrick Hand','Comic Sans MS',cursive;font-size:19px;line-height:1.3;}
+  .tl-bubble{position:relative;max-width:82%;padding:9px 14px;border:2px solid #0e0e0e;border-radius:18px;background:#fff;font-family:'Patrick Hand','Comic Sans MS',cursive;font-size:20px;line-height:1.25;}
+  .tl-bubble p{margin:0;}
+  .tl-name{display:block;font:600 10px Inter,sans-serif;letter-spacing:.05em;text-transform:uppercase;color:#6b6560;}
+  .tl-bubble::after{content:"";position:absolute;bottom:-10px;width:16px;height:16px;background:#fff;border-right:2px solid #0e0e0e;border-bottom:2px solid #0e0e0e;}
+  .tl-left{align-self:flex-start;}
+  .tl-left::after{left:22px;transform:rotate(45deg) skew(10deg,10deg);}
+  .tl-right{align-self:flex-end;background:#ffe8d9;}
+  .tl-right::after{right:22px;background:#ffe8d9;transform:rotate(45deg) skew(10deg,10deg);}
+  .tl-thought{border-style:dashed;border-radius:24px;}
+  .tl-thought::after{width:10px;height:10px;bottom:-14px;border:2px dashed #0e0e0e;border-radius:50%;transform:none;}
+  .tl-choice{grid-column:1/-1;padding:22px;border:2.5px solid #0e0e0e;border-radius:14px;background:#fff;box-shadow:5px 5px 0 var(--primary);scroll-margin-top:80px;}
+  .tl-prompt{margin:0 0 14px;font-weight:700;font-size:18px;}
+  .tl-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+  .tl-option{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1.5px solid #e7ded2;border-radius:10px;background:#f6f0e6;font:400 15px/1.45 Inter,sans-serif;text-align:left;cursor:pointer;color:#0e0e0e;}
+  .tl-option:hover{border-color:var(--primary);background:#ffe8d9;}
+  .tl-letter{flex:none;display:grid;place-items:center;width:26px;height:26px;border:1.5px solid #0e0e0e;border-radius:50%;font-weight:700;font-size:12px;}
+  .tl-ending{grid-column:1/-1;display:flex;flex-direction:column;gap:24px;scroll-margin-top:80px;}
+  .tl-end-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;align-items:start;}
+  .tl-end-side{display:flex;flex-direction:column;gap:14px;}
+  .tl-end-side h2{margin:0;font-size:26px;}
+  .tl-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--primary);}
+  .tl-meters{display:grid;gap:8px;max-width:420px;}
+  .tl-meter{display:grid;grid-template-columns:80px 1fr;align-items:center;gap:10px;font-weight:600;font-size:13px;}
+  .tl-track{height:10px;border:1.5px solid #0e0e0e;border-radius:999px;background:#fff;overflow:hidden;}
+  .tl-track i{display:block;height:100%;background:var(--primary);}
+  .tl-card{background:#fff;border:1px solid var(--slate-200);border-radius:14px;padding:20px;}
+  .tl-takeaways{margin:0;padding-left:18px;font-size:14px;line-height:1.6;}
+  .tl-path{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;}
+  .tl-path li{border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--gray-50);}
+  .tl-path p{margin:0;}
+  .tl-path-q{font-size:12px;color:var(--muted-fg);}
+  .tl-path-a{font-weight:600;font-size:14px;margin:6px 0 !important;}
+  .tl-path-n{font-size:13px;color:var(--tg-700);}
+  .tl-path-s{font-size:11.5px;color:var(--gray-500);margin-top:8px !important;}
+  .tl-q{margin:6px 0 10px;font-weight:600;}
+  .tl-reflect textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px;font:inherit;font-size:14px;resize:vertical;outline:0;}
+  .tl-reflect textarea:focus{border-color:var(--primary-400);}
+  .tl-answer{margin:0;padding:10px 12px;border-radius:8px;background:var(--gray-50);font-size:14px;}
+  .tl-session{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px;border-radius:10px;background:#ecfdf5;}
+  .tl-session b{display:block;font-size:14px;color:#047857;}
+  .tl-session span:not(.av){font-size:13px;color:var(--tg-700);}
+  .tl-agenda{margin-top:10px;padding:10px 12px;border:1px dashed var(--slate-300);border-radius:10px;font-size:13.5px;}
+  .tl-agenda p{margin:4px 0 0;}
+  .ev-agenda{display:flex;align-items:flex-start;gap:10px;margin-top:10px;padding:10px 12px;border-radius:8px;background:var(--cal-blue-50);font-size:13px;color:var(--tg-700);}
+  .ev-agenda .e{font-size:16px;line-height:1.2;}
+  @media (max-width: 1100px){ .tl-options,.tl-path{grid-template-columns:1fr;} }
+  @media (max-width: 900px){ .tl-intro,.tl-strip,.tl-end-top{grid-template-columns:1fr;} .tl-bar{margin:-32px -16px 0;padding:12px 16px;} }
+
+  /* Profile frames (rings around avatars) + level hover */
+  .fr{position:relative;display:inline-flex;border-radius:50%;flex-shrink:0;}
+  .fr-img{position:absolute;left:-14%;top:-14%;width:128%;height:128%;pointer-events:none;z-index:1;}
+  .av-mood,.av-ok{z-index:2;}
+  [data-level]{position:relative;}
+  [data-level]:hover::after{content:attr(data-level);position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;background:#18181b;color:#fff;font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:6px;z-index:20;pointer-events:none;}
+
+  /* Preferences › Appearance */
+  .edit-appear{margin-left:auto;align-self:center;flex-shrink:0;}
+  .pref-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);}
+  .pref-tabs button{border:0;background:none;padding:10px 14px;font-size:14px;font-weight:500;color:var(--muted-fg);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .pref-tabs button.on{color:var(--primary);border-bottom-color:var(--primary);}
+  .appear{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start;}
+  .appear-main{display:flex;flex-direction:column;gap:16px;}
+  .appear-hero{display:flex;align-items:center;gap:24px;padding:24px;}
+  .lvl-line{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:15px;flex-wrap:wrap;}
+  .lvl-pill{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:var(--sidebar-active);color:var(--primary);font-size:13px;font-weight:700;}
+  .xp-bar{height:10px;border-radius:99px;background:var(--tg-200);overflow:hidden;margin-top:10px;max-width:520px;}
+  .xp-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff9b4d,#ff5d18);border-radius:99px;}
+  .frame-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
+  .frame-card{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 12px 14px;border:1.5px solid var(--slate-200);border-radius:12px;background:#fff;cursor:pointer;text-align:center;}
+  .frame-card.on{border-color:var(--primary);background:var(--sidebar-active);}
+  .frame-card.locked .frame-prev{filter:grayscale(.6);opacity:.6;}
+  .frame-prev{display:flex;align-items:center;justify-content:center;height:92px;}
+  .frame-prev.big{height:auto;}
+  .frame-only{width:82px;height:82px;display:block;}
+  .frame-empty{width:64px;height:64px;border-radius:50%;border:1.5px dashed var(--slate-300);}
+  .frame-name{font-size:14px;font-weight:600;margin-top:6px;}
+  .frame-sub{font-size:12px;color:var(--muted-fg);min-height:16px;}
+  .frame-foot{margin-top:8px;min-height:30px;display:flex;align-items:center;}
+  .eq-badge{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:12.5px;font-weight:600;}
+  .lock-badge{display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:999px;background:var(--muted);color:var(--muted-fg);font-size:12.5px;font-weight:500;}
+  .appear-side{display:flex;flex-direction:column;gap:16px;}
+  .appear-side .block{padding:20px;}
+  .appear-side h2{margin-bottom:14px;}
+  .rule{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--border);font-size:14px;}
+  .rule:first-of-type{border-top:0;padding-top:0;}
+  .xp-amt{flex-shrink:0;min-width:48px;font-weight:700;color:#047857;font-size:13.5px;}
+  .xp-amt.neg{color:var(--tg-500);}
+  .xp-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--border);font-size:13.5px;}
+  .xp-row:first-of-type{border-top:0;padding-top:0;}
+  @media (max-width: 1100px){ .appear{grid-template-columns:1fr;} }
+
+  /* Path drops */
+  .drop-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--border);}
+  .block h2 + .drop-row{border-top:0;padding-top:0;}
+  .drop-icon{width:40px;height:40px;border-radius:10px;background:var(--gray-50);display:inline-flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .drop-main{flex:1;min-width:0;}
+  .drop-main b{font-size:14.5px;font-weight:600;}
+  .drop-type{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-fg);margin-bottom:2px;}
+  .drop-xp{font-size:13px;font-weight:700;color:#047857;flex-shrink:0;}
+  .drop-act{display:flex;align-items:center;gap:6px;flex-shrink:0;min-width:96px;justify-content:flex-end;}
+  .fact-reveal{margin-top:8px;padding:10px 12px;border-radius:8px;background:#fffbeb;font-size:14px;color:var(--tg-700);}
+  .quiz-q{margin:6px 0 14px;font-size:17px;font-weight:600;}
+  .quiz-opts{display:flex;flex-direction:column;gap:8px;}
+  .quiz-opt{text-align:left;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:14.5px;cursor:pointer;}
+  .quiz-opt:hover:not([disabled]){border-color:var(--primary-400);background:var(--sidebar-active);}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-opt.right{border-color:#22c55e;background:#ecfdf5;color:#047857;font-weight:600;}
+  .quiz-opt.wrong{border-color:#f87171;background:#fef2f2;color:#b91c1c;}
+  .quiz-opt.dim{opacity:.55;}
+  .quiz-why{margin-top:12px;padding:10px 12px;border-radius:8px;font-size:13.5px;}
+  .quiz-why.ok{background:#ecfdf5;color:#065f46;}
+  .quiz-why.no{background:#fef2f2;color:#991b1b;}
+
+  /* Achievements (badge art: ../../badges, earned / -locked / -disabled) */
+  .ach-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
+  .ach{position:relative;outline:none;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:4px 2px 6px;border-radius:12px;background:#fff;}
+  .ach img{width:92px;height:92px;display:block;}
+  .ach b{font-size:12.5px;font-weight:600;margin-top:2px;line-height:1.25;}
+  .ach-lvl{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:#ffe8d9;color:#c2410c;font-size:11px;font-weight:600;margin-top:2px;}
+  .ach-locked .ach-lvl,.ach-disabled .ach-lvl{background:var(--muted);color:var(--muted-fg);}
+  .ach-tip{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);width:190px;display:none;flex-direction:column;gap:3px;padding:10px 12px;border-radius:10px;background:#18181b;color:#fff;text-align:left;z-index:30;box-shadow:0 10px 25px rgba(0,0,0,.25);}
+  .ach-tip::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#18181b;}
+  .ach-tip b{font-size:13px;margin:0;}
+  .ach-tip span{font-size:12px;color:#d4d4d8;}
+  .ach-tip .ach-tip-lvl{color:#fdba74;font-weight:600;}
+  .ach:hover .ach-tip,.ach:focus .ach-tip{display:flex;}
+
+  /* Popover */
+  .pop{position:fixed;z-index:60;width:320px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 40px rgba(0,0,0,.14);padding:16px;}
+  .pop-h{display:flex;align-items:flex-start;gap:10px;}
+  .pop-h .e{font-size:28px;line-height:1;}
+  .pop-h b{font-size:14.5px;font-weight:600;display:block;}
+  .iconbtn{border:0;background:none;cursor:pointer;color:var(--tg-500);padding:4px;border-radius:6px;display:inline-flex;}
+  .iconbtn:hover{background:rgba(0,0,0,.05);color:var(--tg-900);}
+
+  /* Set a status modal (Slack-style single field) */
+  .overlay{position:fixed;inset:0;background:rgba(15,15,20,.4);z-index:70;display:flex;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;}
+  .modal{width:520px;max-width:100%;background:#fff;border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.2);padding:22px 24px 20px;}
+  .modal h3{margin:0;font-size:20px;font-weight:700;}
+  .sfield{position:relative;display:flex;align-items:center;margin-top:18px;border:1px solid #c7c7cc;border-radius:8px;height:44px;}
+  .sfield:focus-within{border-color:#1d9bd1;box-shadow:0 0 0 3px rgba(29,155,209,.25);}
+  .sfield .emoji-btn{width:44px;height:42px;border:0;background:none;border-radius:8px 0 0 8px;font-size:20px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--tg-500);flex-shrink:0;}
+  .sfield .emoji-btn:hover{background:var(--gray-50);}
+  .sfield input{flex:1;border:0;outline:0;font:inherit;font-size:15px;padding:0 4px;min-width:0;background:none;}
+  .sfield input::placeholder{color:#9ca3af;}
+  .sfield .clear{margin-right:8px;}
+  .sfield .count{margin-right:12px;font-size:12px;color:var(--gray-500);flex-shrink:0;}
+  .picker{position:absolute;top:calc(100% + 6px);left:0;z-index:5;width:100%;display:grid;grid-template-columns:repeat(10,1fr);gap:2px;padding:8px;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.14);}
+  .picker button{border:0;background:none;font-size:20px;height:36px;border-radius:6px;cursor:pointer;}
+  .picker button:hover{background:var(--gray-50);}
+  .lbl{font-size:14px;font-weight:600;margin:18px 0 6px;}
+  select{width:100%;height:40px;border:1px solid #c7c7cc;border-radius:8px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+  .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px;}
+
+  /* Chat (chat2.0 floating widget) */
+  .fab{position:fixed;right:24px;bottom:24px;width:56px;height:56px;border-radius:50%;background:var(--primary-400);color:#fff;border:0;box-shadow:0 10px 15px -3px rgba(0,0,0,.15);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:40;}
+  .fab:hover{background:var(--primary-500);}
+  .fab .online{position:absolute;right:0;bottom:0;width:16px;height:16px;border-radius:50%;background:#4ade80;border:2px solid #fff;}
+  .fab .unread{position:absolute;top:-4px;left:-4px;min-width:20px;height:20px;border-radius:10px;background:#ef4444;border:2px solid #fff;color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+  .chat{position:fixed;right:24px;bottom:92px;width:380px;height:540px;max-height:calc(100vh - 112px);background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.18);z-index:45;display:flex;flex-direction:column;overflow:hidden;}
+  .chat-h{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);}
+  .chat-h b{font-size:14px;}
+  .chat-body{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+  .contact{display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;cursor:pointer;border:0;background:none;width:100%;text-align:left;}
+  .contact:hover{background:var(--gray-50);}
+  .contact .sub{font-size:12px;color:var(--muted-fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bubble{max-width:80%;padding:8px 11px;border-radius:14px;font-size:13.5px;line-height:1.4;}
+  .bubble.me{align-self:flex-end;background:var(--primary-500);color:#fff;border-bottom-right-radius:4px;}
+  .bubble.them{align-self:flex-start;background:var(--muted);border-bottom-left-radius:4px;}
+  .composer{border-top:1px solid var(--border);padding:10px;display:flex;flex-direction:column;gap:6px;}
+  .composer-row{display:flex;gap:8px;align-items:flex-end;}
+  .composer textarea{flex:1;resize:none;border:1px solid var(--border);border-radius:8px;padding:9px 10px;font:inherit;font-size:13.5px;height:40px;outline:0;}
+  .composer textarea:focus{border-color:var(--primary-400);}
+
+  /* Demo controls (prototype only) */
+  .demo{position:fixed;left:336px;bottom:16px;z-index:50;display:flex;align-items:center;gap:6px;background:#18181b;color:#fff;border-radius:999px;padding:5px 6px 5px 12px;font-size:12px;box-shadow:0 10px 25px rgba(0,0,0,.25);}
+  .demo .dseg{display:flex;background:rgba(255,255,255,.12);border-radius:999px;padding:2px;}
+  .demo .dseg button{border:0;background:none;color:#d4d4d8;font-size:12px;padding:4px 10px;border-radius:999px;cursor:pointer;}
+  .demo .dseg button.on{background:#fff;color:#18181b;font-weight:600;}
+  .demo .dbtn{border:0;background:rgba(255,255,255,.12);color:#fff;font-size:12px;padding:5px 10px;border-radius:999px;cursor:pointer;}
+  .demo .dbtn:hover{background:rgba(255,255,255,.22);}
+  .toast{position:fixed;right:24px;top:20px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);color:var(--tg-900);font-size:14px;padding:14px 18px;border-radius:10px;z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.12);}
+
+  @media (max-width: 1100px){
+    .kpis{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .wgrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .ev-row{flex-wrap:wrap;}
+  }
+  @media (max-width: 900px){
+    aside{display:none;}
+    .demo{left:16px;}
+    .hero,.body2{grid-template-columns:1fr;}
+    .body2 > section + section{border-left:0;border-top:1px solid var(--slate-200);}
+    .welcome,.mentor-info{flex-direction:column;}
+    .frame,.page-head{padding-left:16px;padding-right:16px;}
+    .chat{right:12px;left:12px;width:auto;}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="../../prototype/story.js"></script>
+<script>
+(() => {
+  // ---------- Fixed demo data ----------
+  const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // Day 0 is Mon 19 Oct 2026; other days are offsets from it.
+  const dateOf = (d) => new Date(2026, 9, 19 + d);
+  const weekday = (d) => DAY_NAMES[((d % 7) + 7) % 7];
+  const dayNum = (d) => dateOf(d).getDate();
+  const monthOf = (d) => MONTHS[dateOf(d).getMonth()];
+  const dayLabel = (d) => weekday(d) + " " + dayNum(d) + " " + monthOf(d);
+
+  const PEOPLE = {
+    debora: { id: "debora", first: "Jasmine", full: "Jasmine Timberlake", initials: "JT", role: "Mentee", photo: { src: "assets/people/jasmine.jpg", pos: "50% 28%" } },
+    marco: { id: "marco", first: "Marco", full: "Marco Rossi", initials: "MR", role: "Mentor", photo: { src: "assets/people/marco.jpg", pos: "50% 35%" } },
+    giulia: { id: "giulia", first: "Giulia", full: "Giulia Ferrari", initials: "GF", role: "Mentee" },
+    luca: { id: "luca", first: "Luca", full: "Luca Bruni", initials: "LB", role: "Mentee", photo: { src: "assets/people/luca.jpg", pos: "50% 22%", size: "190%" } },
+  };
+  const MENTOR_OF = { debora: "marco", giulia: "marco", luca: "marco" };
+  const MENTEES_OF = { marco: ["debora", "giulia", "luca"] };
+  const MENTEE_INFO = {
+    debora: { job: "UX Lead", reports: 3, email: "jasmine.timberlake@thepack.tech", tz: "Europe/Dublin", path: "Innovative mindset", goals: "Lead my first design review", program: "Firefighting", done: 3, total: 10, chem: 1, dates: "06/01/2026 – 06/01/2027" },
+    giulia: { job: "Data Analyst", reports: 0, email: "giulia.ferrari@thepack.tech", tz: "Europe/Rome", path: "Data storytelling", goals: "Present insights to leadership", program: "Firefighting", done: 4, total: 8, chem: 1, dates: "05/04/2026 – 05/04/2027" },
+    luca: { job: "Team Leader", reports: 4, email: "luca.bruni@thepack.tech", tz: "Europe/Rome", path: "Smart leadership", goals: "Run better one-to-ones", program: "Leadership Accelerator", done: 1, total: 6, chem: 0, dates: "09/14/2026 – 03/14/2027" },
+  };
+
+  // Micro endorsements: written by a matched mentor/mentee (emoji + copy), or earned from a rule.
+  const EARNED = {
+    consistent: { emoji: "✊", label: "Consistent learner", rule: "Attended 4 sessions in a row" },
+    goal: { emoji: "🏁", label: "Goal getter", rule: "Reached a mentoring goal" },
+    ontime: { emoji: "⏰", label: "Always on time", rule: "Joined 5 sessions on time" },
+    quick: { emoji: "⚡", label: "Quick responder", rule: "Answered mentee messages within a day for a month" },
+    fifty: { emoji: "🏅", label: "50 sessions mentored", rule: "Ran 50 mentoring sessions" },
+  };
+  const earned = (to, key, day) => Object.assign({ to, from: null, day, rule: EARNED[key].rule, key }, { emoji: EARNED[key].emoji, label: EARNED[key].label });
+  const MAX_ENDORSEMENTS = 3;
+  const ENDORSE_MAX_CHARS = 60;
+  const ENDORSE_MIN_CHARS = 20;
+  // XP values are Pack-wide; HR can't change them.
+  const XP = { session: 50, streak: 100, endorse: 20, tale: 30, trivia: 5 };
+  const STREAK_EVERY = 5;
+  const ENDORSE_XP_PER_WEEK = 3;
+  const DEFAULT_ENDORSE_EMOJI = "👏";
+  // Rules the demo can trigger: when a session ends, these get earned.
+  const AUTO_AWARDS = [
+    { sessionId: "s-debora", to: "debora", key: "consistent" },
+    { sessionId: "s-debora", to: "marco", key: "fifty" },
+  ];
+
+  const SESSIONS = [
+    { id: "s-giulia", mentor: "marco", mentee: "giulia", day: 1, start: 15, end: 16, time: "15:00 to 16:00" },
+    { id: "s-debora", mentor: "marco", mentee: "debora", day: 3, start: 10, end: 11, time: "10:00 to 11:00" },
+    { id: "s-luca", mentor: "marco", mentee: "luca", day: 7, start: 9.5, end: 10.5, time: "09:30 to 10:30" },
+  ];
+  SESSIONS.forEach((x) => { x.baseDay = x.day; });
+  const PAST_SESSION = { mentor: "marco", mentee: "debora", day: -7, time: "10:00 to 11:00" };
+  const AVAILABILITY = [
+    { day: 0, start: 14, end: 17 },
+    { day: 2, start: 9, end: 12 },
+    { day: 4, start: 13, end: 16 },
+    { day: 7, start: 14, end: 17 },
+    { day: 9, start: 9, end: 12 },
+  ];
+
+  const QUICK = ["🥳", "🎯", "📚", "😴", "😬", "🌴", "🙏", "🤔"];
+  const PICKER = ["😀","😄","😊","🙂","😎","🤩","🥳","😌","🤓","🧐","🤔","😬","😅","😮‍💨","😴","🤒","🥱","😤","🙏","💪","🎯","🚀","🔥","✨","🌱","📚","✍️","🧠","💡","🎨","🏃","🧘","☕","🍕","✈️","🌴","🏖️","🏠","👶","🐶","🎉","🏆","❤️","💼","📈","🛠️","🎧","⏳","🌧️","☀️"];
+  const DEFAULT_EMOJI = "💬";
+  const EXPIRY = [
+    { key: "today", label: "Today" },
+    { key: "week", label: "This week" },
+    { key: "session", label: "Until my next session" },
+    { key: "never", label: "Don't clear" },
+  ];
+
+  const SEED = () => ({
+    viewAs: "debora",
+    day: 0,
+    page: "overview",
+    weekOffset: 0,
+    statuses: {
+      marco: { emoji: "🎯", text: "Quarter close this week", expiry: "week", setDay: 0, expiresDay: 6 },
+      giulia: { emoji: "📚", text: "Halfway through an SQL course", expiry: "session", setDay: 0, expiresDay: 1 },
+    },
+    threads: {
+      "debora|marco": [{ from: "marco", text: "See you Thursday. Bring your goals sheet.", day: -1 }],
+      "giulia|marco": [{ from: "giulia", text: "Thanks for the course link!", day: -2 }],
+      "luca|marco": [],
+    },
+    unread: {},
+    hideChemAlert: false,
+    profileId: null,
+    storyId: null,
+    tale: { started: false, choices: {}, reflection: "", lang: "en", runId: 1 },
+    taleShared: null,
+    xp: {
+      debora: {
+        total: 1240, balance: 640, equipped: "silver-tech", frames: ["silver-plate", "silver-tech", "silver-shard", "gold-scalloped", "gold-lobed"], talesDone: [],
+        history: [
+          { day: -63, xp: 100, label: "5 sessions in a row · Gold scalloped frame earned" },
+          { day: -40, xp: -300, label: "Unlocked Gold lobed frame" },
+          { day: -35, xp: 50, label: "Session with Marco Rossi" },
+          { day: -28, xp: 50, label: "Session with Marco Rossi" },
+          { day: -21, xp: 50, label: "Session with Marco Rossi" },
+          { day: -14, xp: 50, label: "Session with Marco Rossi" },
+          { day: -7, xp: 50, label: "Session with Marco Rossi" },
+          { day: -7, xp: 20, label: "Endorsed Marco Rossi" },
+        ],
+      },
+      marco: {
+        total: 2050, balance: 520, equipped: "silver-cog", frames: ["silver-cog", "silver-tech", "silver-shard", "gold-vine"], talesDone: [],
+        history: [
+          { day: -14, xp: 50, label: "Session with Jasmine Timberlake" },
+          { day: -12, xp: 20, label: "Endorsed Jasmine Timberlake" },
+          { day: -7, xp: 50, label: "Session with Jasmine Timberlake" },
+          { day: -6, xp: 50, label: "Session with Giulia Ferrari" },
+        ],
+      },
+      giulia: { total: 420, balance: 120, equipped: "silver-compass", frames: ["silver-plate", "silver-compass"], talesDone: [], history: [] },
+      luca: { total: 180, balance: 180, equipped: "silver-plate", frames: ["silver-plate"], talesDone: [], history: [] },
+    },
+    // Sessions in a row per mentee; only the mentee's own reschedule/cancel resets it.
+    streak: { debora: 4, giulia: 2, luca: 1 },
+    sessionDays: {},
+    cancelled: [],
+    levelUps: {
+    },
+    drops: { done: {}, triviaXp: [] },
+    endorsements: [
+      { to: "debora", emoji: "🌱", label: "Growth mindset", from: "marco", day: -30 },
+      earned("debora", "goal", -20),
+      { to: "debora", emoji: "🗣️", label: "Great communicator", from: "marco", day: -14 },
+      { to: "debora", emoji: "⭐", label: "Rockstar problem solver", from: "marco", day: -7 },
+      earned("marco", "ontime", -40),
+      earned("marco", "quick", -10),
+      { to: "marco", emoji: "🤝", label: "Great listener", from: "debora", day: -7 },
+      { to: "marco", emoji: "💡", label: "Insightful", from: "giulia", day: -3 },
+      earned("giulia", "consistent", -5),
+    ],
+  });
+
+  const STORE_KEY = "micro-engagement-01:mentoring:v11";
+  const load = () => {
+    try { const raw = localStorage.getItem(STORE_KEY); if (raw) return Object.assign(SEED(), JSON.parse(raw)); } catch (e) { /* storage unavailable */ }
+    return SEED();
+  };
+  let S = load();
+  const requestedView = new URLSearchParams(location.search).get("as");
+  if (requestedView === "mentor") S.viewAs = "marco";
+  if (requestedView === "mentee") S.viewAs = "debora";
+  if ((S.page === "chemistry" || S.page === "menteeProfile") && S.viewAs !== "marco") S.page = "overview";
+  if (S.page === "story") S.page = "library";
+  // Transient UI state, never persisted.
+  const U = { userMenu: false, navOpen: true, pop: null, modal: null, endorse: null, appearanceSel: null, unlock: null, sessionChange: null, pastOpen: true, xpModal: null, trivia: null, taleLangOpen: false, taleRun: { started: false, choices: {}, reflection: "", lang: "en", runId: 0 }, chat: { open: false, with: null, draft: "" }, toast: "", menteesTab: "progress" };
+  const save = () => { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable */ } };
+
+  // ---------- Helpers ----------
+  const esc = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const me = () => PEOPLE[S.viewAs];
+  const isMentor = () => me().role === "Mentor";
+  const counterparts = (pid) => (MENTEES_OF[pid] || (MENTOR_OF[pid] ? [MENTOR_OF[pid]] : []));
+  const threadKey = (a, b) => [a, b].sort().join("|");
+  const syncSessions = () => SESSIONS.forEach((x) => { x.day = S.sessionDays[x.id] != null ? S.sessionDays[x.id] : x.baseDay; });
+  const activeSessions = () => SESSIONS.filter((x) => !S.cancelled.includes(x.id));
+  const upcomingSessions = (pid) => activeSessions().filter((s) => (s.mentor === pid || s.mentee === pid) && s.day >= S.day).sort((a, b) => a.day - b.day);
+  const otherIn = (session, pid) => (session.mentor === pid ? session.mentee : session.mentor);
+  const statusOf = (pid) => {
+    const s = S.statuses[pid];
+    return s && S.day <= s.expiresDay ? s : null;
+  };
+  const expiresDayFor = (expiry, pid) => {
+    if (expiry === "today") return S.day;
+    if (expiry === "week") return S.day + (6 - (S.day % 7));
+    if (expiry === "session") { const next = upcomingSessions(pid)[0]; return next ? next.day : S.day; }
+    return Infinity;
+  };
+
+  const svg = (size, body, extra) => '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"' + (extra || "") + ">" + body + "</svg>";
+  const I = {
+    home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 11.2c0-.9.4-1.7 1.1-2.3l6.5-5.2a3 3 0 0 1 3.8 0l6.5 5.2c.7.6 1.1 1.4 1.1 2.3V19a2.5 2.5 0 0 1-2.5 2.5h-3.5V16a1.5 1.5 0 0 0-1.5-1.5h-4A1.5 1.5 0 0 0 8.5 16v5.5H5A2.5 2.5 0 0 1 2.5 19z"/></svg>',
+    users: svg(18, '<circle cx="12" cy="7.5" r="3.2"/><path d="M5.5 20c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5"/><circle cx="5" cy="9" r="2.2"/><circle cx="19" cy="9" r="2.2"/><path d="M1.5 18c0-2 1.3-3.4 3.2-3.8M22.5 18c0-2-1.3-3.4-3.2-3.8"/>'),
+    chevDown: svg(15, '<path d="m6 9 6 6 6-6"/>'),
+    panel: svg(16, '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M16 15l-3-3 3-3"/>'),
+    bell: svg(17, '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>'),
+    check: svg(14, '<path d="M20 6 9 17l-5-5"/>'),
+    checkSm: svg(10, '<path d="M20 6 9 17l-5-5"/>', ' stroke-width="3.5"'),
+    atom: svg(14, '<circle cx="12" cy="12" r="1.5"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>'),
+    cal: svg(14, '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>'),
+    usersSm: svg(14, '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2.1.6 3.5 2.4 3.5 5.2"/>'),
+    userCircle: svg(14, '<circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="10" r="3"/><path d="M6.2 18.5c1.3-2 3.4-3 5.8-3s4.5 1 5.8 3"/>'),
+    building: svg(16, '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"/>'),
+    briefcase: svg(16, '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/>'),
+    mail: svg(16, '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'),
+    clock: svg(16, '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+    globe: svg(16, '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/>'),
+    branch: svg(16, '<circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="7" r="2"/><path d="M6 7v10M18 9c0 5-6 4-11.5 8.5"/>'),
+    flag: svg(16, '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'),
+    file: svg(16, '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>'),
+    clipboard: svg(18, '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/>'),
+    chevL: svg(16, '<path d="m15 18-6-6 6-6"/>'),
+    chevR: svg(16, '<path d="m9 18 6-6-6-6"/>'),
+    arrowR: svg(16, '<path d="M5 12h14M13 6l6 6-6 6"/>'),
+    languages: svg(15, '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>'),
+    compass: svg(18, '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>'),
+    plus: svg(16, '<path d="M12 5v14M5 12h14"/>'),
+    video: svg(16, '<rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/>'),
+    msg: svg(24, '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/>'),
+    x: svg(16, '<path d="M18 6 6 18M6 6l12 12"/>', ' stroke-width="2"'),
+    xL: svg(20, '<path d="M18 6 6 18M6 6l12 12"/>', ' stroke-width="2"'),
+    back: svg(16, '<path d="m15 18-6-6 6-6"/>', ' stroke-width="2"'),
+    send: svg(16, '<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>', ' stroke-width="2"'),
+    smile: svg(20, '<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5s1.3 2 3.5 2 3.5-2 3.5-2M9 9.5h.01M15 9.5h.01"/>', ' stroke-width="1.8"'),
+    calUp: svg(20, '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M12 13v5M9.5 15.5 12 13l2.5 2.5"/>'),
+    mentoring: svg(20, '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c2.1.6 3.5 2.4 3.5 5.2"/>'),
+    flask: svg(20, '<path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3M7 15h10"/>'),
+    info: svg(18, '<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>'),
+  };
+
+  const avatar = (pid, size, opts) => {
+    const p = PEOPLE[pid];
+    const o = opts || {};
+    const s = o.mood ? statusOf(pid) : null;
+    // Initials always sit underneath; the photo covers them only if it loads (it's dropped on error).
+    const zoom = p.photo && p.photo.size ? "transform:scale(" + parseFloat(p.photo.size) / 100 + ");transform-origin:" + p.photo.pos + ";" : "";
+    const photo = p.photo ? '<span class="av-ph"><img src="' + p.photo.src + '" alt="" style="object-position:' + p.photo.pos + ";" + zoom + '" onerror="this.parentNode.remove()"></span>' : "";
+    const inner = '<span class="av" style="width:' + size + "px;height:" + size + "px;font-size:" + Math.round(size * 0.4) + 'px;">' + esc(p.initials) + photo
+      + (s ? '<span class="av-mood" style="font-size:' + Math.max(10, Math.round(size * 0.26)) + 'px;" >' + s.emoji + "</span>" : "")
+      + (o.ok ? '<span class="av-ok">' + I.checkSm + "</span>" : "") + "</span>";
+    const acc = S.xp && S.xp[pid];
+    const frame = o.frame !== undefined ? o.frame : acc && acc.equipped;
+    const level = !o.noLevel && acc && pid !== S.viewAs ? ' data-level="Level ' + levelOf(acc.total) + '"' : "";
+    const withFrame = frame && frame !== "none" ? inner.replace(/<\/span>$/, '<img class="fr-img" src="' + FRAMES_ROOT + frame + '.svg" alt=""></span>') : inner;
+    return level ? '<span class="fr"' + level + ">" + withFrame + "</span>" : withFrame;
+  };
+  // The counterpart's status as a chip. It opens the status popover.
+  const mood = (pid, iconOnly) => {
+    const s = statusOf(pid);
+    if (!s) return "";
+    return '<button class="mood' + (iconOnly ? " icon" : "") + '" data-act="pop" data-pid="' + pid + '"><span class="e">' + s.emoji + "</span>"
+      + (iconOnly || !s.text ? "" : "<span>" + esc(s.text) + "</span>") + "</button>";
+  };
+
+  // Rule: only the 3 latest endorsements show.
+  const latestEndorsements = (pid) => S.endorsements
+    .map((e, index) => Object.assign({ index }, e))
+    .filter((e) => e.to === pid && e.day <= S.day)
+    .sort((a, b) => b.day - a.day || b.index - a.index)
+    .slice(0, MAX_ENDORSEMENTS);
+  const canEndorse = (pid) => pid !== S.viewAs && counterparts(S.viewAs).includes(pid);
+  const endoChips = (pid, layout) => {
+    const chips = latestEndorsements(pid).map((e) => {
+      return '<span class="endo"><span class="e">' + esc(e.emoji) + '</span><span class="lbl-t">' + esc(e.label) + "</span></span>";
+    }).join("");
+    const add = canEndorse(pid) ? '<button class="endo add" data-act="openEndorse" data-pid="' + pid + '">+ Endorse</button>' : "";
+    if (!chips && !add) return "";
+    return '<div class="endos ' + (layout || "") + '">' + chips + add + "</div>";
+  };
+
+  // ---------- Shell ----------
+  function sidebar() {
+    const s = statusOf(S.viewAs);
+    const items = ["overview", "events", "library"].concat(isMentor() ? ["chemistry"] : []);
+    const labels = { overview: "Overview", events: "Events", library: "Library", chemistry: "Chemistry" };
+    const links = U.navOpen ? items.map((id) => '<button class="navlink ' + (S.page === id || (S.page === "story" && id === "library") ? "on" : "") + '" data-act="nav" data-page="' + id + '">' + labels[id] + "</button>").join("") : "";
+    const menu = !U.userMenu ? "" : '<div class="menu">'
+      + '<button class="menu-status" data-act="openStatus">' + (s
+        ? '<span class="e">' + s.emoji + '</span><span style="flex:1;min-width:0;color:var(--tg-900);">' + esc(s.text) + "</span>"
+        : '<span class="e">' + I.smile + '</span><span style="flex:1;">Update your status</span>') + "</button>"
+      + (s ? '<button class="menu-item" data-act="clearStatus">Clear status</button>' : "")
+      + '<div class="menu-sep"></div><button class="menu-item" data-act="openAppearance">Preferences</button><button class="menu-item" style="color:var(--destructive);">Logout</button></div>';
+    return '<aside><div class="sb-head"><img src="assets/pack-black.svg" alt="Pack"><button class="sb-collapse" title="Collapse sidebar">' + I.panel + "</button></div>"
+      + '<nav class="sb-nav"><div><button class="grp ' + (U.navOpen ? "" : "closed") + '" data-act="toggleNav"><span class="ico">' + I.users + '</span>Learning &amp; Development<span class="chev">' + I.chevDown + "</span></button>"
+      + '<div style="margin-top:2px;">' + links + "</div></div></nav>"
+      + '<div class="sb-foot">' + menu + '<button class="userbtn" data-act="userMenu">' + avatar(S.viewAs, 32, { mood: true })
+      + "<span><b>" + esc(me().full) + "</b><small>" + me().role + "</small></span></button>"
+      + '<button class="bell" title="Notifications">' + I.bell + "<i>" + (isMentor() ? 1 : 2) + "</i></button></div></aside>";
+  }
+
+  function pageHead() {
+    if (S.page === "appearance") {
+      return '<div class="page-head"><div class="crumbs"><span class="tile">' + I.home.replace(/22/g, "15") + '</span><span>Preferences</span><span style="display:inline-flex;color:var(--gray-400);">' + I.chevR + "</span><b>Appearance</b></div></div>";
+    }
+    if (S.page === "story" && TALES) {
+      return '<div class="page-head"><div class="crumbs"><span class="tile">' + I.home.replace(/22/g, "15") + '</span><a data-act="nav" data-page="library">Library</a><span style="display:inline-flex;color:var(--gray-400);">' + I.chevR + "</span><b>" + esc(TALES.story.title.en) + "</b></div></div>";
+    }
+    if (S.page === "menteeProfile") {
+      return '<div class="page-head"><div class="crumbs"><span class="tile">' + I.home.replace(/22/g, "15") + '</span><a data-act="nav" data-page="overview">Learning &amp; Development</a><span style="display:inline-flex;color:var(--gray-400);">' + I.chevR + "</span><b>" + esc(PEOPLE[S.profileId].full) + "</b></div></div>";
+    }
+    const titles = { overview: "Learning &amp; Development", events: "Events", library: "Library", chemistry: "Chemistry" };
+    return '<div class="page-head"><h1><span class="tile">' + I.home + "</span>" + titles[S.page] + "</h1></div>";
+  }
+
+  // ---------- Status check-in (top of Overview) ----------
+  function checkin() {
+    const s = statusOf(S.viewAs);
+    if (!s) {
+      return '<div class="card2 checkin"><h2 style="margin:0;">How are you today?</h2>'
+        + '<div class="quick">' + QUICK.map((e) => '<button class="qbtn" data-act="quick" data-e="' + e + '">' + e + "</button>").join("")
+        + '<button class="qbtn more" data-act="openStatus">Update your status</button></div></div>';
+    }
+    return '<div class="card2 checkin"><div class="mine"><span class="big">' + s.emoji + '</span><div style="min-width:0;">'
+      + (s.text ? '<div style="font-size:16px;font-weight:600;">' + esc(s.text) + "</div>" : "")
+      + '</div></div><div style="display:flex;gap:6px;"><button class="btn sm" data-act="openStatus">Edit</button><button class="btn sm ghost" data-act="clearStatus">Clear</button></div></div>';
+  }
+
+  // ---------- Upcoming event card ----------
+  function opener(pid) {
+    const s = statusOf(pid);
+    if (!s) return "";
+    return '<div class="opener"><span class="e">' + s.emoji + "</span><span><b>" + esc(PEOPLE[pid].first) + "</b>" + (s.text ? " · “" + esc(s.text) + "”" : "") + "</span></div>";
+  }
+  function attendee(pid) {
+    const self = pid === S.viewAs;
+    return '<span class="att">' + avatar(pid, 36, { ok: true }) + "<span>" + esc(PEOPLE[pid].full) + (self ? " (You)" : "") + "</span>"
+      + (self ? "" : mood(pid, true)) + "<small>· " + PEOPLE[pid].role + "</small></span>";
+  }
+  function eventCard(sess, past) {
+    const other = otherIn(sess, S.viewAs);
+    const actions = past
+      ? '<button class="btn join" disabled>' + I.video + "Join</button>"
+      : '<button class="btn join">' + I.video + "Join</button>" + (isMentor() ? '<button class="btn" data-act="openProfile" data-pid="' + other + '">View profile</button>' : "") + '<button class="btn" data-act="askSessionChange" data-id="' + sess.id + '" data-kind="reschedule">Reschedule</button><button class="btn danger" data-act="askSessionChange" data-id="' + sess.id + '" data-kind="cancel">Cancel</button>';
+    return '<li class="ev"><div class="ev-row"><div class="dtile"><b>' + dayNum(sess.day) + "</b><span>" + monthOf(sess.day) + "</span></div>"
+      + '<div class="ev-mid"><div class="ev-l1"><span class="tchip">Standard: Mentoring/Coaching</span><span class="ev-time">' + weekday(sess.day) + ", " + sess.time + '</span><span class="dur">1h</span></div>'
+      + '<div class="ev-l2">' + attendee(other) + attendee(S.viewAs) + "</div></div>"
+      + '<div class="ev-act">' + actions + "</div></div>" + (past ? "" : (isMentor() ? opener(other) : "") + storyAgenda(sess)) + "</li>";
+  }
+  function upcomingBlock(withPid) {
+    const list = upcomingSessions(S.viewAs).filter((x) => !withPid || otherIn(x, S.viewAs) === withPid);
+    return '<div class="block"><h2>Upcoming events (' + list.length + ")</h2>"
+      + (list.length ? '<ul class="events">' + list.map((x) => eventCard(x)).join("") + "</ul>" : '<div class="empty">You have no upcoming sessions.</div>') + "</div>";
+  }
+  function pastBlock(withPid) {
+    const past = activeSessions().filter((x) => x.day < S.day).sort((a, b) => b.day - a.day).concat([PAST_SESSION])
+      .filter((x) => (x.mentor === S.viewAs || x.mentee === S.viewAs) && (!withPid || otherIn(x, S.viewAs) === withPid));
+    return '<div class="block past"><div class="sec-h"><button class="sec-toggle' + (U.pastOpen ? "" : " closed") + '" data-act="togglePast">Past events (' + past.length + ')<span class="chev">' + I.chevDown + "</span></button></div>"
+      + (U.pastOpen ? '<ul class="events">' + past.map((x) => eventCard(x, true)).join("") + "</ul>" : "") + "</div>";
+  }
+
+  // ---------- Mentee overview card (own Overview, and /mentee/[userId] for the mentor) ----------
+  function ring(done, total) {
+    const r = 38, c = 2 * Math.PI * r, pct = done / total;
+    return '<div style="position:relative;width:96px;height:96px;"><svg width="96" height="96" viewBox="0 0 96 96"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9B4D"/><stop offset=".5" stop-color="#FF7A1A"/><stop offset="1" stop-color="#E85D00"/></linearGradient></defs>'
+      + '<circle cx="48" cy="48" r="' + r + '" fill="none" stroke="#e2e8f0" stroke-width="9" stroke-dasharray="8 3"/>'
+      + '<circle cx="48" cy="48" r="' + r + '" fill="none" stroke="url(#rg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + (c * pct) + " " + c + '" transform="rotate(-90 48 48)"/></svg>'
+      + '<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--slate-800);">' + done + "/" + total + "</span></div>";
+  }
+  function kpi(icon, label, value) {
+    return '<div><div class="kpi-l">' + icon + label + '</div><div class="kpi-v">' + value + "</div></div>";
+  }
+  // Program details is hidden for now; flip to bring the column back.
+  const SHOW_PROGRAM_DETAILS = false;
+  function menteeCard(pid) {
+    const info = MENTEE_INFO[pid];
+    const mentorId = MENTOR_OF[pid];
+    const viewerIsMentor = isMentor();
+    const mentorLink = viewerIsMentor ? esc(PEOPLE[mentorId].full) : '<a data-act="scrollMentor">' + esc(PEOPLE[mentorId].full) + "</a>" + mood(mentorId, true);
+    const kpis = [
+      kpi(I.check, "Completed sessions", info.done + " of " + info.total),
+      kpi(I.atom, "Chemistry sessions", info.chem),
+      kpi(I.cal, "Upcoming sessions", upcomingSessions(pid).length),
+    ].concat(viewerIsMentor ? [] : [kpi(I.usersSm, "Proposed mentors", "0")]).concat([kpi(I.userCircle, "Assigned mentor", mentorLink)]);
+    return '<div class="card2"><div class="hero"><div><div class="who">' + avatar(pid, 96, { mood: true })
+      + '<div><h2 style="display:flex;align-items:center;gap:8px;">' + esc(PEOPLE[pid].full) + (pid === S.viewAs ? "" : mood(pid)) + "</h2>"
+      + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px;"><span class="role-badge" style="margin-top:0;">Mentee</span>' + endoChips(pid) + "</div></div>" + (pid === S.viewAs ? '<button class="btn sm edit-appear" data-act="openAppearance">Edit appearance</button>' : "") + "</div>"
+      + '<div class="kpis" style="grid-template-columns:repeat(' + kpis.length + ',minmax(0,1fr)) auto;">' + kpis.join("") + ring(info.done, info.total) + "</div></div></div>"
+      + '<div class="body2"><section><h3>Personal info</h3><dl class="info">'
+      + "<dt>" + I.building + "Company</dt><dd>Pack - The People Development Platform</dd>"
+      + "<dt>" + I.briefcase + "Job title</dt><dd>" + esc(info.job) + "</dd>"
+      + "<dt>" + I.mail + 'Email</dt><dd><a style="color:var(--kpi);font-weight:500;text-decoration:none;">' + esc(info.email) + "</a></dd>"
+      + "<dt>" + I.clock + "Timezone</dt><dd>" + esc(info.tz) + "</dd>"
+      + "<dt>" + I.globe + "Mentoring languages</dt><dd>English (English)</dd>"
+      + "<dt>" + I.branch + 'Mentoring path</dt><dd><span class="tag">' + esc(info.path) + "</span></dd>"
+      + "<dt>" + I.flag + "Mentoring goals</dt><dd>" + esc(info.goals) + "</dd>"
+      + "<dt>" + I.file + 'About</dt><dd style="color:var(--slate-400);">—</dd></dl></section>'
+      + (SHOW_PROGRAM_DETAILS ? '<section><h3>Program details</h3><div class="prog-h">' + I.clipboard + 'Program information</div><dl class="prog">'
+      + '<dt>Service type</dt><dd><span class="tag" style="background:var(--slate-50);">Mentoring</span></dd><dt>Program Name</dt><dd>' + esc(info.program) + "</dd><dt>Program Mode</dt><dd>Mixed</dd>"
+      + "<dt>Progress model</dt><dd>Sessions</dd><dt>Sessions</dt><dd>" + info.done + " of " + info.total + "</dd><dt>Dates</dt><dd>" + info.dates + "</dd></dl></section>" : "") + achievementsSection(pid) + "</div></div>";
+  }
+  // ---------- Achievements (mentee card, 3rd column) ----------
+  // Each badge has levels: the count needed for Level 1, 2, 3… (more can be appended later).
+  const ACH_DEFS = [
+    { icon: "rocket", name: "Kickoff", badge: "kickoff", desc: "Sessions done", metric: "sessions", levels: [1, 5, 10, 25, 50] },
+    { icon: "target", name: "Goal Setter", badge: "goal-setter", desc: "Goals done", metric: "goals", levels: [3, 10, 25] },
+    { icon: "flag", name: "Halfway there", badge: "halfway-there", desc: "Programs where you reached halfway", metric: "halfway", levels: [1, 3, 5] },
+    { icon: "flame", name: "On a Roll", badge: "on-a-roll", desc: "Best run of sessions in a row", metric: "streak", levels: [5, 10, 20] },
+    { icon: "chat", name: "Feedback Seeker", badge: "feedback-seeker", desc: "Session feedbacks given", metric: "feedbacks", levels: [3, 10, 25] },
+    { icon: "book", name: "Storyteller", badge: "storyteller", desc: "Stories finished", metric: "stories", levels: [1, 5, 10] },
+    { icon: "heart", name: "Encourager", badge: "encourager", desc: "Endorsements given", metric: "endorse", levels: [3, 15, 50] },
+    { icon: "trophy", name: "Path complete", badge: "path-complete", desc: "Paths completed", metric: "paths", levels: [1, 3, 5] },
+  ];
+  // Counts the prototype doesn't track elsewhere.
+  const ACH_COUNTS = {
+    debora: { goals: 4, halfway: 0, feedbacks: 2, bestStreak: 5, paths: 0 },
+    giulia: { goals: 2, halfway: 1, feedbacks: 4, bestStreak: 3, paths: 0 },
+    luca: { goals: 1, halfway: 0, feedbacks: 0, bestStreak: 1, paths: 0 },
+  };
+  function achCount(pid, metric) {
+    const c = ACH_COUNTS[pid];
+    if (metric === "sessions") return MENTEE_INFO[pid].done;
+    if (metric === "streak") return Math.max(c.bestStreak, S.streak[pid] || 0);
+    if (metric === "stories") return xpOf(pid).talesDone.length;
+    if (metric === "endorse") return S.endorsements.filter((e) => e.from === pid).length;
+    return c[metric];
+  }
+  function achievementsFor(pid) {
+    return ACH_DEFS.map((d) => {
+      const count = achCount(pid, d.metric);
+      const level = d.levels.filter((need) => count >= need).length;
+      return Object.assign({ count, level, next: d.levels[level] }, d);
+    });
+  }
+  const BADGES_ROOT = "../../badges/";
+  function achTile(a) {
+    // Earned once Level 1 is reached; started-but-not-earned shows the locked art; not started shows disabled.
+    const state = a.level > 0 ? "earned" : a.count > 0 ? "locked" : "disabled";
+    const src = BADGES_ROOT + a.badge + (state === "earned" ? "" : "-" + state) + ".svg";
+    const progress = a.next ? a.count + "/" + a.next + " to Level " + (a.level + 1) : a.count + " · max level";
+    const tip = '<span class="ach-tip" role="tooltip"><b>' + esc(a.name) + "</b><span>" + esc(a.desc) + '</span><span class="ach-tip-lvl">Level ' + a.level + " · " + progress + "</span></span>";
+    return '<div class="ach ach-' + state + '" tabindex="0"><img src="' + src + '" alt=""><b>' + esc(a.name) + '</b><span class="ach-lvl">Level ' + a.level + "</span>" + tip + "</div>";
+  }
+  const achievementsSection = (pid) => '<section><h3>Achievements</h3><div class="ach-grid">' + achievementsFor(pid).map(achTile).join("") + "</div></section>";
+
+  function menteeOverview() {
+    const mentorId = MENTOR_OF[S.viewAs];
+    const mentorBlock = '<div class="block" id="my-mentor"><h2>My Mentor</h2><div class="mentor-info"><div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;">' + avatar(mentorId, 96) + endoChips(mentorId, "stack") + "</div>"
+      + "<div><h3>" + esc(PEOPLE[mentorId].full) + mood(mentorId) + "</h3>"
+      + "<dl><div><dt>🏢 Company:</dt> <dd>Pack - The People Development Platform</dd></div><div><dt>💼 Job title:</dt> <dd>Head of Finance</dd></div>"
+      + '<div><dt>👷‍♀️ Fields of work</dt><dd style="display:block;margin-left:20px;">Finance, Operations</dd></div><div><dt>🎯 Expertises</dt><dd style="display:block;margin-left:20px;">Budgeting, Team leadership</dd></div>'
+      + "<div><dt>🤝 Experience:</dt> <dd>12 years</dd></div><div><dt>🗣️ Languages:</dt> <dd>English, Italian</dd></div><div><dt>🕛 Timezone:</dt> <dd>Europe/Rome</dd></div>"
+      + '<div><dt>📝 About:</dt><dd style="display:block;margin-left:24px;font-size:14px;">Finance lead who enjoys helping people grow into their first leadership role.</dd></div><div>✉️ marco.rossi@thepack.tech</div></dl></div></div></div>';
+    return checkin() + menteeCard(S.viewAs) + upcomingBlock() + mentorBlock + pastBlock();
+  }
+  // Mirrors /mentee/[userId] as the mentor sees it.
+  function menteeProfilePage() {
+    const pid = S.profileId;
+    return '<button class="back" data-act="nav" data-page="overview">← Go back</button>' + menteeCard(pid) + upcomingBlock(pid) + pastBlock(pid);
+  }
+
+  // ---------- Mentor overview ----------
+  function welcomeCard() {
+    const next = upcomingSessions(S.viewAs)[0];
+    const inDays = next ? next.day - S.day : null;
+    const nextTxt = next ? (inDays === 0 ? "today" : inDays === 1 ? "in 1 day" : "in " + inDays + " days") : "";
+    const bars = [["Communication", 4.8], ["Punctuality", 4.6], ["Insight", 4.7], ["Insight Applicability", 4.5]];
+    return '<div class="welcome"><div class="left"><div class="hi">' + avatar(S.viewAs, 64, { mood: true }) + "<div><small>Welcome back,</small><b>" + esc(me().full) + "</b></div>" + '<button class="btn sm edit-appear" data-act="openAppearance">Edit appearance</button></div>' + endoChips(S.viewAs)
+      + '<div class="wgrid"><div style="grid-column:span 2;"><div class="lbl">Sessions</div>'
+      + '<div class="wline">' + I.calUp + "<b>" + upcomingSessions(S.viewAs).length + "</b><span>Upcoming Sessions" + (next ? " (Next " + nextTxt + ")" : "") + "</span></div>"
+      + '<div class="wline">' + I.mentoring + "<b>3</b><span>Mentoring / Coaching</span></div>"
+      + '<div class="wline">' + I.flask + "<b>0</b><span>Chemistry</span></div></div>"
+      + '<div><div class="lbl">Active Matchings</div><div class="wline">' + I.mentoring + "<b>3</b><span>Mentees</span></div>"
+      + '<div class="wline">' + I.mentoring + "<b>0</b><span>Coachees</span></div></div>"
+      + '<div class="rating"><div class="stars">4.7 <i>★★★★★</i></div>'
+      + bars.map((b) => '<div><div class="bar-l">' + b[0] + '</div><div class="bar"><span><i style="width:' + (b[1] / 5) * 100 + '%;"></i></span>' + b[1] + "/5</div></div>").join("") + "</div></div></div></div>";
+  }
+  function chemAlert() {
+    if (S.hideChemAlert) return "";
+    return '<div class="alert-chem"><span>You don\'t have any chemistry slots in the next 3 weeks. You will not be suggested for potential matches until you create some chemistry slots. If you don\'t want to get new matches, you can update your preferences in the <a>matching settings</a> in your profile</span><button data-act="hideChem">' + I.xL + "</button></div>";
+  }
+  function calendar() {
+    const start = S.weekOffset * 7;
+    const days = [0, 1, 2, 3, 4, 5, 6].map((i) => start + i);
+    const hours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+    const H = 52, top = (h) => (h - 8) * H;
+    const label = monthOf(start) === monthOf(start + 6) ? (monthOf(start) === "Oct" ? "October 2026" : "November 2026") : "Oct – Nov 2026";
+    const col = (d) => {
+      const av = AVAILABILITY.filter((a) => a.day === d).map((a) => '<div class="cev avail" style="top:' + top(a.start) + "px;height:" + ((a.end - a.start) * H - 3) + 'px;background:var(--cal-orange-50);"><i style="background:var(--cal-orange-500);"></i>Generic Availability</div>').join("");
+      const ss = activeSessions().filter((x) => x.day === d && x.mentor === S.viewAs).map((x) => {
+        const s = statusOf(x.mentee);
+        return '<div class="cev booked" style="top:' + top(x.start) + "px;height:" + ((x.end - x.start) * H - 3) + 'px;' + (d < S.day ? "opacity:.6;" : "") + '"><span class="bar-w"></span><div style="min-width:0;"><b>' + esc(PEOPLE[x.mentee].full)
+          + (s ? '<button class="emo" data-act="pop" data-pid="' + x.mentee + '">' + s.emoji + "</button>" : "") + '</b><span class="tb">Standard</span></div></div>';
+      }).join("");
+      return '<div class="wk-col">' + av + ss + "</div>";
+    };
+    return '<section class="block cal"><div class="cal-tb"><button class="ibtn" data-act="week" data-dir="-1">' + I.chevL + '</button><button class="ibtn" data-act="week" data-dir="1">' + I.chevR + '</button><span class="cal-month">' + label + '</span><button class="today-btn" data-act="week" data-dir="0">Today</button>'
+      + '<div class="tabs"><button>Month</button><button class="on">Week</button></div><button class="ibtn" title="Take a tour">' + I.compass + "</button></div>"
+      + '<div class="legend"><b>Legend:</b><span class="sw"><i style="background:var(--cal-orange-50);border-color:var(--cal-orange-200);"></i>Generic</span><span class="sw"><i style="background:var(--cal-yellow-50);border-color:var(--cal-yellow-600);"></i>Chemistry</span><span class="sw"><i style="background:var(--cal-blue-50);border-color:var(--cal-blue-600);"></i>Standard</span><span class="sw"><i style="background:repeating-linear-gradient(45deg,#e8e8e8 0 3px,#f9f9f9 3px 6px);border-color:var(--gray-400);"></i>Google Calendar</span>'
+      + '<div class="split"><button>Add new ' + I.plus + "</button><button>" + I.chevDown + "</button></div></div>"
+      + '<div class="wk"><div class="wk-head"><div></div>' + days.map((d) => '<div class="' + (d === S.day ? "today" : "") + '">' + weekday(d) + "<b>" + dayNum(d) + "</b></div>").join("") + "</div>"
+      + '<div class="wk-body"><div class="wk-hours">' + hours.map((h) => "<div>" + (h === 8 ? "" : (h > 12 ? h - 12 : h) + ":00 " + (h >= 12 ? "PM" : "AM")) + "</div>").join("") + "</div>" + days.map(col).join("") + "</div></div></section>";
+  }
+  function menteesTable() {
+    const ids = U.menteesTab === "progress" ? MENTEES_OF[S.viewAs] : [];
+    const ringSm = (p) => '<span style="display:inline-flex;align-items:center;gap:10px;"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="#e5e7eb" stroke-width="5"/><circle cx="22" cy="22" r="18" fill="none" stroke="#ff7a1a" stroke-width="5" stroke-linecap="round" stroke-dasharray="' + (2 * Math.PI * 18 * p / 100) + ' 200" transform="rotate(-90 22 22)"/></svg>' + p + "%</span>";
+    return '<div class="block"><h2>My mentees</h2><div class="tbl"><div class="tbl-tb"><div class="seg"><button class="' + (U.menteesTab === "progress" ? "on" : "") + '" data-act="menteesTab" data-tab="progress">In progress</button><button class="' + (U.menteesTab === "archived" ? "on" : "") + '" data-act="menteesTab" data-tab="archived">Archived</button></div></div>'
+      + '<table><thead><tr><th style="width:45%;">Name</th><th style="width:22%;">Status</th><th style="width:33%;">Progress</th></tr></thead><tbody>'
+      + (ids.length ? ids.map((pid) => '<tr><td><span class="nm">' + avatar(pid, 40, { mood: true }) + '<a class="name-link" data-act="openProfile" data-pid="' + pid + '">' + esc(PEOPLE[pid].full) + "</a>" + mood(pid) + "</span></td><td>Matched</td><td>" + ringSm(Math.round((MENTEE_INFO[pid].done / MENTEE_INFO[pid].total) * 100)) + "</td></tr>").join("")
+        : '<tr><td colspan="3" style="text-align:center;color:var(--gray-500);">No archived mentees.</td></tr>') + "</tbody></table></div></div>";
+  }
+  function mentorOverview() {
+    return checkin() + welcomeCard() + chemAlert() + calendar() + menteesTable() + upcomingBlock() + pastBlock();
+  }
+
+  function eventsPage() { return upcomingBlock() + pastBlock(); }
+  // ---------- Library: PackTales stories (content + art from ../../prototype) ----------
+  const TALES_ROOT = "../../prototype/";
+  const TALES = window.PACK_TALES || null;
+  const taleImg = (id, alt, cls) => '<img class="' + (cls || "") + '" src="' + TALES_ROOT + "images/" + id + '.jpg" alt="' + esc(alt || "") + '" loading="lazy">';
+  // Who each story is written for: mentees who manage people, mentees without reports, or mentors.
+  const STORY_LIST = [
+    { id: "feedback", audience: "manager", playable: true },
+    { id: "offer-manager", audience: "manager", cover: "cover-offer", minutes: 4, title: "The offer you didn't see coming", skill: "Stay conversations", blurb: "You are Sara. Marco just got an offer from a competitor. You're the last to know." },
+    { id: "offer-ic", audience: "ic", cover: "cover-offer", minutes: 4, title: "The offer on your phone", skill: "Career decisions", blurb: "You are Marco. A competitor wants you. Your manager has no idea." },
+    { id: "mentor", audience: "mentor", cover: "cover-mentee", minutes: 4, title: "The answer you hold back", skill: "Coaching questions", blurb: "You are Elena. Your mentee wants the answer. Giving it would be easy." },
+  ];
+  const AUDIENCE_LABEL = { manager: "Mentees who manage people", ic: "Mentees without reports", mentor: "Mentors" };
+  const audienceOf = (pid) => (PEOPLE[pid].role === "Mentor" ? "mentor" : (MENTEE_INFO[pid].reports ? "manager" : "ic"));
+  const storyMeta = (st) => {
+    if (!st.playable) return st;
+    const tale = TALES.story;
+    return Object.assign({}, st, { cover: tale.cover, minutes: tale.minutes, title: tale.title.en, skill: tale.skill.en, blurb: tale.blurb.en });
+  };
+  const TL_TEXT = {
+    en: { stepOf: "Step {n} of {total}", restart: "Restart", explore: "Explore other paths", youPlay: "You play Sara, a team manager. Marco is on her team.", share: "Add to my next session with {mentor}", sessionWhen: "{when} · Mentoring with {mentor}", privacy: "Your choices are visible only to you and {mentor}. HR sees aggregate engagement only.", preview: "Preview. Your mentees add their path and reflection to your next session.", noSession: "No upcoming session to add this to." },
+    it: { stepOf: "Passo {n} di {total}", restart: "Ricomincia", explore: "Esplora altre strade", youPlay: "Interpreti Sara, una team manager. Marco è nel suo team.", share: "Aggiungi alla prossima sessione con {mentor}", sessionWhen: "{when} · Mentoring con {mentor}", privacy: "Le tue scelte le vedete solo tu e {mentor}. L'HR vede solo dati aggregati.", preview: "Anteprima. I tuoi mentee aggiungono percorso e riflessione alla tua prossima sessione.", noSession: "Nessuna sessione in programma a cui aggiungerla." },
+    es: {"outcome": "Resultado", "trust": "Confianza", "clarity": "Claridad", "debrief": "Debrief", "skill": "Habilidad entrenada", "yourPath": "Tu camino", "othersChose": "de tu empresa eligió esto", "demoData": "datos de demo", "reflection": "Reflexión", "reflectionPlaceholder": "Escribe unas líneas; solo las verán tú y las personas con quienes las compartas.", "shared": "Añadido a tu próxima sesión", "agendaItem": "Punto del orden del día", "start": "Empezar", "stepOf": "Paso {n} de {total}", "restart": "Reiniciar", "explore": "Explorar otros caminos", "youPlay": "Interpretas a Sara, una team manager. Marco está en su equipo.", "share": "Añadir a mi próxima sesión con {mentor}", "sessionWhen": "{when} · Mentoring con {mentor}", "privacy": "Tus elecciones solo las veis tú y {mentor}. RR. HH. solo ve datos agregados.", "preview": "Vista previa. Tus mentees añaden su camino y su reflexión a tu próxima sesión.", "noSession": "No hay ninguna sesión programada a la que añadirlo."},
+    fr: {"outcome": "Résultat", "trust": "Confiance", "clarity": "Clarté", "debrief": "Débrief", "skill": "Compétence travaillée", "yourPath": "Ton parcours", "othersChose": "de ton entreprise a choisi ceci", "demoData": "données de démo", "reflection": "Réflexion", "reflectionPlaceholder": "Écris quelques lignes ; seules toi et les personnes avec qui tu les partages les verront.", "shared": "Ajouté à ta prochaine session", "agendaItem": "Point à l'ordre du jour", "start": "Commencer", "stepOf": "Étape {n} sur {total}", "restart": "Recommencer", "explore": "Explorer d'autres parcours", "youPlay": "Tu incarnes Sara, une team manager. Marco fait partie de son équipe.", "share": "Ajouter à ma prochaine session avec {mentor}", "sessionWhen": "{when} · Mentoring avec {mentor}", "privacy": "Tes choix ne sont visibles que par toi et {mentor}. Les RH ne voient que des données agrégées.", "preview": "Aperçu. Tes mentees ajoutent leur parcours et leur réflexion à ta prochaine session.", "noSession": "Aucune session prévue à laquelle l'ajouter."},
+  };
+  // Same control and languages as the report's language picker (apps/assessment ReportHeaderActions on master).
+  const TL_LANGS = [["en", "English"], ["it", "Italian"], ["es", "Spanish"], ["fr", "French"]];
+  // story.js only ships en/it: es/fr story copy is looked up by its English text.
+  const TL_STORY = {"es": {"The feedback you keep postponing": "El feedback que sigues posponiendo", "You are Sara. Marco is great. Marco is also late. Again.": "Eres Sara. Marco es genial. Marco también llega tarde. Otra vez.", "Feedback (SBI model)": "Feedback (modelo SBI)", "Situation → Behaviour → Impact, then ask. Describe facts, not the person, and leave room for their side before proposing anything.": "Situación → Comportamiento → Impacto, y luego pregunta. Describe hechos, no a la persona, y deja espacio a su versión antes de proponer nada.", "Start from a fact both of you can see.": "Parte de un hecho que ambos podáis ver.", "The cause is often not where you think: ask before fixing.": "La causa a menudo no está donde crees: pregunta antes de arreglar.", "Close with a commitment on both sides and a date to check it.": "Cierra con un compromiso por ambas partes y una fecha para revisarlo.", "When did you last postpone a feedback conversation? What were you afraid would happen?": "¿Cuándo fue la última vez que pospusiste una conversación de feedback? ¿Qué temías que pasara?", "Monday, 9:10. The client report was due on Friday. It arrived this morning. Third time this quarter.": "Lunes, 9:10. El informe para el cliente era para el viernes. Ha llegado esta mañana. Tercera vez este trimestre.", "I can't keep putting this off.": "No puedo seguir posponiéndolo.", "You ask Marco for ten minutes. How do you open?": "Le pides a Marco diez minutos. ¿Cómo empiezas?", "\"Marco, Friday again. This can't keep happening.\"": "\"Marco, otra vez el viernes. Esto no puede seguir pasando.\"", "Marco crosses his arms.": "Marco se cruza de brazos.", "Wow. OK. Good morning to you too.": "Vaya. Vale. Buenos días a ti también.", "Direct, but it judges the person instead of describing the fact. People defend themselves before they listen.": "Directo, pero juzga a la persona en lugar de describir el hecho. La gente se defiende antes de escuchar.", "\"So… how's everything going lately?\"": "\"Entonces… ¿qué tal todo últimamente?\"", "Ten minutes of small talk. You still have to get to the point.": "Diez minutos de charla. Todavía tienes que ir al grano.", "All good! Busy, but good.": "¡Todo bien! Con mucho lío, pero bien.", "Warm, but the real topic gets lost. Marco could easily leave thinking there is no problem.": "Cercano, pero el tema real se pierde. Marco podría irse pensando que no hay ningún problema.", "\"The Ferri report landed Monday instead of Friday, and the client noticed. I'd like to understand what happened.\"": "\"El informe Ferri llegó el lunes en vez del viernes, y el cliente lo notó. Me gustaría entender qué pasó.\"", "Marco takes a second.": "Marco se toma un segundo.", "Yeah… I know. There's something I haven't told you.": "Sí… lo sé. Hay algo que no te he contado.", "Situation, Behaviour, Impact: facts, not judgments. It leaves room for Marco's side of the story.": "Situación, Comportamiento, Impacto: hechos, no juicios. Deja espacio a la versión de Marco.", "Marco takes a breath.": "Marco toma aire.", "I've been onboarding the two new hires. Nobody asked me to, but nobody else was doing it.": "He estado haciendo el onboarding de las dos nuevas incorporaciones. Nadie me lo pidió, pero nadie más lo estaba haciendo.", "Now you know why. What do you say?": "Ahora sabes por qué. ¿Qué respondes?", "\"That's not your job. Focus on your deliverables.\"": "\"Ese no es tu trabajo. Céntrate en tus entregables.\"", "He stops talking. He won't bring it up again.": "Deja de hablar. No volverá a sacar el tema.", "Right. Got it.": "Vale. Entendido.", "Clear on priorities, but it dismisses a real contribution and ignores the actual cause: nobody owns onboarding.": "Claro en las prioridades, pero desprecia una contribución real e ignora la causa: nadie es responsable del onboarding.", "\"Thanks for telling me, I hadn't seen it. What would help you?\"": "\"Gracias por contármelo, no lo había visto. ¿Qué te ayudaría?\"", "His shoulders drop an inch.": "Sus hombros se relajan un poco.", "Honestly? Someone taking half of it. And one quiet afternoon for client work.": "¿Sinceramente? Que alguien se encargue de la mitad. Y una tarde tranquila para el trabajo del cliente.", "Acknowledge first, then ask. The solution comes from Marco, so he owns it.": "Primero reconoce, luego pregunta. La solución viene de Marco, así que es suya.", "\"OK, no worries. Let's just push your deadlines back.\"": "\"Vale, no te preocupes. Simplemente retrasemos tus plazos.\"", "Problem solved? Not really.": "¿Problema resuelto? No del todo.", "…Sure. If you say so.": "…Vale. Si tú lo dices.", "It eases the moment, but the client still waits and onboarding stays on Marco's shoulders.": "Alivia el momento, pero el cliente sigue esperando y el onboarding sigue sobre los hombros de Marco.", "The meeting is almost over. How do you close?": "La reunión casi ha terminado. ¿Cómo cierras?", "\"Let's agree: HR's buddy programme takes onboarding, you block Thursday afternoons. Check-in next Monday?\"": "\"Acordemos esto: el programa de buddy de RR. HH. se encarga del onboarding y tú bloqueas los jueves por la tarde. ¿Lo revisamos el lunes que viene?\"", "Deal. Monday at ten.": "Trato hecho. El lunes a las diez.", "A concrete commitment on both sides and a date to check it. Feedback without follow-up fades.": "Un compromiso concreto por ambas partes y una fecha para revisarlo. El feedback sin seguimiento se diluye.", "\"Let's see how it goes.\"": "\"Vamos viendo cómo va.\"", "Sure.": "Claro.", "Nothing is agreed, so nothing changes. In two weeks you'll be having the same conversation.": "No se acuerda nada, así que nada cambia. En dos semanas tendréis la misma conversación.", "\"From now on I'll keep an eye on your deadlines.\"": "\"A partir de ahora vigilaré tus plazos.\"", "…Okay.": "…Vale.", "It sounds like control, not support. Marco feels watched, and trust drops.": "Suena a control, no a apoyo. Marco se siente vigilado y la confianza cae.", "Trust up, problem solved": "Más confianza, problema resuelto", "Two weeks later. The report lands on Wednesday. Marco runs the new hires' kickoff, with HR's buddy programme behind him.": "Dos semanas después. El informe llega el miércoles. Marco dirige la bienvenida de las nuevas incorporaciones, con el programa de buddy de RR. HH. detrás.", "On time, at a cost": "A tiempo, pero a un precio", "Two weeks later. Deadlines are back on track, but Marco works late and speaks less in meetings. The cause is still there.": "Dos semanas después. Los plazos vuelven a cumplirse, pero Marco trabaja hasta tarde y habla menos en las reuniones. La causa sigue ahí.", "The conversation that didn't happen": "La conversación que no tuvo lugar", "Two weeks later. Another late delivery. Marco has stopped explaining, and he spends a lot of time on his phone.": "Dos semanas después. Otra entrega tarde. Marco ha dejado de dar explicaciones y pasa mucho tiempo con el móvil."}, "fr": {"The feedback you keep postponing": "Le feedback que tu repousses sans cesse", "You are Sara. Marco is great. Marco is also late. Again.": "Tu es Sara. Marco est génial. Marco est aussi en retard. Encore.", "Feedback (SBI model)": "Feedback (modèle SBI)", "Situation → Behaviour → Impact, then ask. Describe facts, not the person, and leave room for their side before proposing anything.": "Situation → Comportement → Impact, puis demande. Décris les faits, pas la personne, et laisse de la place à sa version avant de proposer quoi que ce soit.", "Start from a fact both of you can see.": "Pars d'un fait que vous pouvez voir tous les deux.", "The cause is often not where you think: ask before fixing.": "La cause n'est souvent pas là où tu penses : demande avant de corriger.", "Close with a commitment on both sides and a date to check it.": "Conclus avec un engagement des deux côtés et une date pour faire le point.", "When did you last postpone a feedback conversation? What were you afraid would happen?": "À quand remonte la dernière fois que tu as repoussé une conversation de feedback ? Qu'est-ce que tu craignais ?", "Monday, 9:10. The client report was due on Friday. It arrived this morning. Third time this quarter.": "Lundi, 9 h 10. Le rapport client était dû vendredi. Il est arrivé ce matin. Troisième fois ce trimestre.", "I can't keep putting this off.": "Je ne peux pas continuer à repousser.", "You ask Marco for ten minutes. How do you open?": "Tu demandes dix minutes à Marco. Comment commences-tu ?", "\"Marco, Friday again. This can't keep happening.\"": "« Marco, encore vendredi. Ça ne peut plus durer. »", "Marco crosses his arms.": "Marco croise les bras.", "Wow. OK. Good morning to you too.": "Ah. D'accord. Bonjour à toi aussi.", "Direct, but it judges the person instead of describing the fact. People defend themselves before they listen.": "Direct, mais cela juge la personne au lieu de décrire le fait. On se défend avant d'écouter.", "\"So… how's everything going lately?\"": "« Alors… comment ça va en ce moment ? »", "Ten minutes of small talk. You still have to get to the point.": "Dix minutes de bavardage. Il te reste à en venir au fait.", "All good! Busy, but good.": "Tout va bien ! Chargé, mais bien.", "Warm, but the real topic gets lost. Marco could easily leave thinking there is no problem.": "Chaleureux, mais le vrai sujet se perd. Marco pourrait repartir en pensant qu'il n'y a aucun problème.", "\"The Ferri report landed Monday instead of Friday, and the client noticed. I'd like to understand what happened.\"": "« Le rapport Ferri est arrivé lundi au lieu de vendredi, et le client l'a remarqué. J'aimerais comprendre ce qui s'est passé. »", "Marco takes a second.": "Marco prend une seconde.", "Yeah… I know. There's something I haven't told you.": "Oui… je sais. Il y a quelque chose que je ne t'ai pas dit.", "Situation, Behaviour, Impact: facts, not judgments. It leaves room for Marco's side of the story.": "Situation, Comportement, Impact : des faits, pas des jugements. Cela laisse de la place à la version de Marco.", "Marco takes a breath.": "Marco reprend son souffle.", "I've been onboarding the two new hires. Nobody asked me to, but nobody else was doing it.": "Je m'occupe de l'intégration des deux nouvelles recrues. Personne ne me l'a demandé, mais personne d'autre ne le faisait.", "Now you know why. What do you say?": "Maintenant tu sais pourquoi. Que réponds-tu ?", "\"That's not your job. Focus on your deliverables.\"": "« Ce n'est pas ton travail. Concentre-toi sur tes livrables. »", "He stops talking. He won't bring it up again.": "Il se tait. Il n'en reparlera plus.", "Right. Got it.": "D'accord. Compris.", "Clear on priorities, but it dismisses a real contribution and ignores the actual cause: nobody owns onboarding.": "Clair sur les priorités, mais cela balaie une vraie contribution et ignore la cause réelle : personne n'est responsable de l'intégration.", "\"Thanks for telling me, I hadn't seen it. What would help you?\"": "« Merci de me l'avoir dit, je ne l'avais pas vu. Qu'est-ce qui t'aiderait ? »", "His shoulders drop an inch.": "Ses épaules se relâchent un peu.", "Honestly? Someone taking half of it. And one quiet afternoon for client work.": "Franchement ? Que quelqu'un en prenne la moitié. Et un après-midi au calme pour le travail client.", "Acknowledge first, then ask. The solution comes from Marco, so he owns it.": "D'abord reconnaître, puis demander. La solution vient de Marco, donc elle lui appartient.", "\"OK, no worries. Let's just push your deadlines back.\"": "« OK, pas de souci. Repoussons simplement tes échéances. »", "Problem solved? Not really.": "Problème résolu ? Pas vraiment.", "…Sure. If you say so.": "…D'accord. Si tu le dis.", "It eases the moment, but the client still waits and onboarding stays on Marco's shoulders.": "Cela détend le moment, mais le client attend toujours et l'intégration reste sur les épaules de Marco.", "The meeting is almost over. How do you close?": "La réunion touche à sa fin. Comment conclus-tu ?", "\"Let's agree: HR's buddy programme takes onboarding, you block Thursday afternoons. Check-in next Monday?\"": "« Mettons-nous d'accord : le programme de parrainage des RH prend en charge l'intégration, tu bloques tes jeudis après-midi. On fait le point lundi prochain ? »", "Deal. Monday at ten.": "Marché conclu. Lundi à dix heures.", "A concrete commitment on both sides and a date to check it. Feedback without follow-up fades.": "Un engagement concret des deux côtés et une date pour faire le point. Un feedback sans suivi s'estompe.", "\"Let's see how it goes.\"": "« On verra comment ça se passe. »", "Sure.": "Bien sûr.", "Nothing is agreed, so nothing changes. In two weeks you'll be having the same conversation.": "Rien n'est convenu, donc rien ne change. Dans deux semaines, vous aurez la même conversation.", "\"From now on I'll keep an eye on your deadlines.\"": "« Désormais, je garderai un œil sur tes échéances. »", "…Okay.": "…D'accord.", "It sounds like control, not support. Marco feels watched, and trust drops.": "Cela sonne comme du contrôle, pas du soutien. Marco se sent surveillé, et la confiance baisse.", "Trust up, problem solved": "Plus de confiance, problème résolu", "Two weeks later. The report lands on Wednesday. Marco runs the new hires' kickoff, with HR's buddy programme behind him.": "Deux semaines plus tard. Le rapport arrive mercredi. Marco anime l'accueil des nouvelles recrues, avec le programme de parrainage des RH derrière lui.", "On time, at a cost": "À l'heure, mais à quel prix", "Two weeks later. Deadlines are back on track, but Marco works late and speaks less in meetings. The cause is still there.": "Deux semaines plus tard. Les échéances sont de nouveau tenues, mais Marco travaille tard et parle moins en réunion. La cause est toujours là.", "The conversation that didn't happen": "La conversation qui n'a pas eu lieu", "Two weeks later. Another late delivery. Marco has stopped explaining, and he spends a lot of time on his phone.": "Deux semaines plus tard. Encore une livraison en retard. Marco a cessé de s'expliquer, et il passe beaucoup de temps sur son téléphone."}};
+
+  const taleChoices = () => TALES.story.beats.filter((b) => b.type === "choice");
+  // Mentees play for real (saved, shareable); a mentor's preview is throwaway.
+  const isTalePreview = () => isMentor();
+  const taleRun = () => (isTalePreview() ? U.taleRun : S.tale);
+  const tl = (key, vars) => {
+    const run = taleRun();
+    const raw = TL_TEXT[run.lang][key] || (TALES.ui[run.lang] && TALES.ui[run.lang][key]) || TALES.ui.en[key] || key;
+    return raw.replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m));
+  };
+  const tlx = (localized) => {
+    const lang = taleRun().lang;
+    if (localized[lang]) return localized[lang];
+    const dict = TL_STORY[lang] || {};
+    return Array.isArray(localized.en) ? localized.en.map((x) => dict[x] || x) : dict[localized.en] || localized.en;
+  };
+  const taleOption = (beat) => beat.options.find((o) => o.id === taleRun().choices[beat.id]);
+  const taleScore = () => taleChoices().reduce((t, b) => { const o = taleOption(b); return { trust: t.trust + o.trust, clarity: t.clarity + o.clarity }; }, { trust: 0, clarity: 0 });
+  const taleEnding = () => { const sc = taleScore(); return TALES.story.endings.find((e) => sc.trust + sc.clarity >= e.minScore); };
+  const talePath = () => taleChoices().map((b) => String.fromCharCode(65 + b.options.indexOf(taleOption(b)))).join(" → ");
+  const taleVisible = () => {
+    const beats = TALES.story.beats;
+    const firstOpen = beats.findIndex((b) => b.type === "choice" && !taleRun().choices[b.id]);
+    return firstOpen === -1 ? beats : beats.slice(0, firstOpen + 1);
+  };
+  const TL_SPEAKERS = { sara: { side: "left", name: { en: "Sara (you)", it: "Sara (tu)", es: "Sara (tú)", fr: "Sara (toi)" } }, marco: { side: "right", name: { en: "Marco", it: "Marco", es: "Marco", fr: "Marco" } } };
+  const tlBubble = (b) => '<div class="tl-bubble tl-' + TL_SPEAKERS[b.who].side + (b.kind === "thought" ? " tl-thought" : "") + '"><span class="tl-name">' + esc(tlx(TL_SPEAKERS[b.who].name)) + "</span><p>" + esc(tlx(b.text)) + "</p></div>";
+  // uniform: strip panels keep the bubble band and caption slots even when empty, so every panel has the same height.
+  const tlPanel = (p, id, uniform, cls) => {
+    const hasBubbles = p.bubbles && p.bubbles.length;
+    const band = hasBubbles || uniform ? '<div class="tl-band">' + (hasBubbles ? p.bubbles.map(tlBubble).join("") : "") + "</div>" : "";
+    const caption = p.caption ? '<figcaption class="tl-caption">' + esc(tlx(p.caption)) + "</figcaption>" : uniform ? '<figcaption class="tl-caption empty"></figcaption>' : "";
+    return '<figure class="tl-panel' + (uniform ? " uniform" : "") + (cls ? " " + cls : "") + '"' + (id ? ' id="' + id + '"' : "") + ">" + band + taleImg(p.image, p.caption ? tlx(p.caption) : "") + caption + "</figure>";
+  };
+  const tlChoice = (beat) => '<section class="tl-choice" id="tl-' + beat.id + '"><p class="tl-prompt">' + esc(tlx(beat.prompt)) + '</p><div class="tl-options">'
+    + beat.options.map((o, i) => '<button class="tl-option" data-act="taleChoose" data-beat="' + beat.id + '" data-opt="' + o.id + '"><span class="tl-letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(tlx(o.label)) + "</span></button>").join("") + "</div></section>";
+  const tlMeter = (label, v) => '<div class="tl-meter"><span>' + label + '</span><span class="tl-track"><i style="width:' + Math.round(((v + 3) / 6) * 100) + '%;"></i></span></div>';
+
+  function storyCard(st, forWhom) {
+    const m = storyMeta(st);
+    const played = st.playable && !isMentor() && S.taleShared;
+    const action = !st.playable
+      ? '<span class="pill-soon">Coming soon</span>'
+      : '<button class="btn ' + (isMentor() ? "" : "primary") + '" data-act="openStory" data-id="' + st.id + '">' + (isMentor() ? "Preview" : played ? "Play again" : "Start") + "</button>";
+    return '<article class="story-card' + (st.playable ? "" : " soon") + '">' + taleImg(m.cover, m.title, "story-cover")
+      + '<div class="story-body"><div class="story-eyebrow">' + esc(m.skill) + " · " + m.minutes + " min</div><h3>" + esc(m.title) + "</h3><p>" + esc(m.blurb) + "</p>"
+      + (forWhom ? '<div class="story-for">' + forWhom + "</div>" : "")
+      + (played ? '<div class="story-for">Added to your session · ' + esc(S.taleShared.endingTitle) + "</div>" : "")
+      + '<div class="story-foot">' + action + "</div></div></article>";
+  }
+
+  function libraryPage() {
+    const rows = [["Giving feedback that lands", "Article · 6 min"], [isMentor() ? "Running a first mentoring session" : "Getting the most from your mentor", "Guide · 10 min"], ["Setting goals you can measure", "Worksheet · 15 min"]];
+    const reading = '<div class="block"><h2>Picked for you</h2>' + rows.map((r) => '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--border);"><div style="flex:1;"><b style="font-weight:500;">' + r[0] + '</b><div class="muted" style="font-size:13px;">' + r[1] + '</div></div><button class="btn sm">Open</button></div>').join("") + "</div>";
+    if (!TALES) return '<div class="block"><h2>Stories</h2><div class="empty">Stories could not be loaded.</div></div>' + reading;
+    const mine = STORY_LIST.filter((st) => st.audience === audienceOf(S.viewAs));
+    let html = '<div class="block"><h2>Stories for you</h2><div class="story-grid">' + mine.map((st) => storyCard(st)).join("") + "</div></div>";
+    if (isMentor()) {
+      const mentees = MENTEES_OF[S.viewAs];
+      const forMentees = STORY_LIST.filter((st) => st.audience !== "mentor" && mentees.some((pid) => audienceOf(pid) === st.audience));
+      html += '<div class="block"><h2>Stories for your mentees</h2><div class="story-grid">'
+        + forMentees.map((st) => storyCard(st, "For " + mentees.filter((pid) => audienceOf(pid) === st.audience).map((pid) => esc(PEOPLE[pid].first)).join(", "))).join("") + "</div></div>";
+    }
+    return html + reading;
+  }
+
+  function storyPage() {
+    const run = taleRun();
+    const tale = TALES.story;
+    const mentorId = isMentor() ? S.viewAs : MENTOR_OF[S.viewAs];
+    const nextSession = upcomingSessions(S.viewAs)[0];
+    const current = TL_LANGS.find(([l]) => l === run.lang)[1];
+    const langToggle = '<div class="tl-lang-wrap"><button class="tl-lang-btn" data-act="toggleTaleLang" aria-expanded="' + !!U.taleLangOpen + '">' + I.languages + esc(current) + I.chevDown + "</button>"
+      + (U.taleLangOpen ? '<div class="tl-lang-menu" role="menu">' + TL_LANGS.map(([l, label]) => '<button class="tl-lang-item" role="menuitem" data-act="taleLang" data-lang="' + l + '">' + esc(label) + (run.lang === l ? '<span class="tl-lang-check">' + I.check + "</span>" : "") + "</button>").join("") + "</div>" : "") + "</div>";
+    if (!run.started) {
+      return '<div class="tl-intro">' + taleImg(tale.cover, tlx(tale.title), "tl-intro-cover") + '<div class="tl-intro-body">'
+        + '<div class="story-eyebrow">' + esc(tlx(tale.skill)) + " · " + tale.minutes + " min</div><h1>" + esc(tlx(tale.title)) + "</h1>"
+        + '<p class="tl-blurb">' + esc(tlx(tale.blurb)) + '</p><p class="muted" style="margin:0;font-size:14px;">' + esc(tl("youPlay")) + "</p>"
+        + (isTalePreview() ? '<p class="tl-preview">' + esc(tl("preview")) + "</p>" : "")
+        + '<div style="display:flex;align-items:center;gap:12px;margin-top:8px;"><button class="btn primary" data-act="taleStart">' + esc(tl("start")) + "</button>" + langToggle + "</div></div></div>";
+    }
+    const answered = Object.keys(run.choices).length;
+    const total = taleChoices().length;
+    const bar = '<div class="tl-bar"><b>' + esc(tlx(tale.title)) + '</b><span class="muted">' + esc(tl("stepOf", { n: Math.min(answered + 1, total), total })) + '</span><span class="tl-progress"><i style="width:' + (answered / total) * 100 + '%;"></i></span>'
+      + '<div class="tl-bar-end">' + langToggle + '<button class="btn sm" data-act="taleRestart">' + esc(tl("restart")) + "</button></div></div>";
+    const beats = taleVisible().map((beat) => {
+      if (beat.type === "panel") return tlPanel(beat, null, true);
+      if (beat.type === "ending") return taleEndingSection(mentorId, nextSession);
+      const o = taleOption(beat);
+      return o ? tlPanel(Object.assign({}, o.panel, { bubbles: [{ who: "sara", text: o.label }].concat(o.panel.bubbles) }), "tl-r-" + beat.id, true, "tl-new-row") : tlChoice(beat);
+    }).join("");
+    return bar + '<div class="tl-strip">' + beats + "</div>";
+  }
+
+  function taleEndingSection(mentorId, nextSession) {
+    const tale = TALES.story;
+    const end = taleEnding();
+    const sc = taleScore();
+    const run = taleRun();
+    const path = '<ol class="tl-path">' + taleChoices().map((b) => { const o = taleOption(b); return "<li><p class=\"tl-path-q\">" + esc(tlx(b.prompt)) + "</p><p class=\"tl-path-a\">" + esc(tlx(o.label)) + "</p><p class=\"tl-path-n\">" + esc(tlx(o.note)) + "</p><p class=\"tl-path-s\">" + o.share + "% " + esc(tl("othersChose")) + " · " + esc(tl("demoData")) + "</p></li>"; }).join("") + "</ol>";
+    const debrief = '<section class="tl-card"><div class="tl-eyebrow">' + esc(tl("debrief")) + '</div><p style="margin:0 0 6px;"><b>' + esc(tl("skill")) + ":</b> " + esc(tlx(tale.skill)) + '</p><p class="muted" style="margin:0 0 10px;">' + esc(tlx(tale.model)) + "</p>"
+      + '<ul class="tl-takeaways">' + tlx(tale.takeaways).map((x) => "<li>" + esc(x) + "</li>").join("") + "</ul>"
+      + '<div class="tl-eyebrow" style="margin-top:18px;">' + esc(tl("yourPath")) + "</div>" + path
+      + '<button class="btn" data-act="taleRestart" style="margin-top:14px;">' + esc(tl("explore")) + I.arrowR + "</button></section>";
+    const shared = !isTalePreview() && S.taleShared && S.taleShared.runId === run.runId;
+    let reflection;
+    if (isTalePreview()) {
+      reflection = '<section class="tl-card tl-reflect"><div class="tl-eyebrow">' + esc(tl("reflection")) + '</div><p class="tl-q">' + esc(tlx(tale.reflection)) + '</p><p class="tl-preview" style="margin:0;">' + esc(tl("preview")) + "</p></section>";
+    } else if (shared) {
+      reflection = '<section class="tl-card tl-reflect"><div class="tl-eyebrow">' + esc(tl("reflection")) + '</div><p class="tl-q">' + esc(tlx(tale.reflection)) + '</p><p class="tl-answer">' + esc(S.taleShared.reflection || "—") + "</p>"
+        + '<div class="tl-session" id="tl-session">' + avatar(mentorId, 40, { noLevel: true }) + '<div><b>' + esc(tl("shared")) + "</b><span>" + esc(tl("sessionWhen", { when: S.taleShared.when, mentor: PEOPLE[mentorId].full })) + "</span></div></div>"
+        + '<div class="tl-agenda"><div class="tl-eyebrow">' + esc(tl("agendaItem")) + "</div><p>" + esc(tlx(tale.title)) + " · " + S.taleShared.path + " · " + esc(S.taleShared.endingTitle) + "</p></div>"
+        + '<p class="muted" style="margin:10px 0 0;font-size:12.5px;">' + esc(tl("privacy", { mentor: PEOPLE[mentorId].full })) + "</p></section>";
+    } else {
+      reflection = '<section class="tl-card tl-reflect"><div class="tl-eyebrow">' + esc(tl("reflection")) + '</div><p class="tl-q">' + esc(tlx(tale.reflection)) + '</p><textarea id="tl-reflection" rows="4" placeholder="' + esc(tl("reflectionPlaceholder")) + '">' + esc(run.reflection) + "</textarea>"
+        + (nextSession ? '<button class="btn primary" data-act="taleShare" style="margin-top:12px;">' + esc(tl("share", { mentor: PEOPLE[mentorId].full })) + "</button>" : '<p class="muted">' + esc(tl("noSession")) + "</p>") + "</section>";
+    }
+    return '<section class="tl-ending" id="tl-ending"><div class="tl-end-top">' + tlPanel({ image: end.image, caption: end.caption })
+      + '<div class="tl-end-side"><div class="tl-eyebrow">' + esc(tl("outcome")) + "</div><h2>" + esc(tlx(end.title)) + '</h2>' + taleXpPill() + '<div class="tl-meters">' + tlMeter(esc(tl("trust")), sc.trust) + tlMeter(esc(tl("clarity")), sc.clarity) + "</div>" + reflection + "</div></div>"
+      + debrief + "</section>";
+  }
+
+  // Agenda item on the session card once a mentee has added their story path.
+  function storyAgenda(sess) {
+    const sh = S.taleShared;
+    if (!sh || sh.sessionId !== sess.id || !TALES) return "";
+    return '<div class="ev-agenda"><span class="e">📖</span><span><b>' + esc(TALES.ui.en.agendaItem) + ":</b> " + esc(TALES.story.title.en) + " · " + sh.path + " · " + esc(sh.endingTitle)
+      + (sh.reflection ? '<span class="muted"> · “' + esc(sh.reflection) + "”</span>" : "") + "</span></div>";
+  }
+  function chemistryPage() { return '<div class="block"><h2>Chemistry</h2><div class="empty">No chemistry requests.</div></div>'; }
+
+  // ---------- Overlays ----------
+  function emojiPicker(act) {
+    return '<div class="picker">' + PICKER.map((e) => '<button data-act="' + act + '" data-e="' + e + '">' + e + "</button>").join("") + "</div>";
+  }
+  function endorseModal() {
+    if (!U.endorse) return "";
+    const d = U.endorse;
+    return '<div class="overlay" data-act="closeEndorseBg"><div class="modal" role="dialog" aria-label="Endorse">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;"><h3>Endorse ' + esc(PEOPLE[d.to].first) + '</h3><button class="iconbtn" data-act="closeEndorse">' + I.xL + "</button></div>"
+      + '<div class="sfield"><button class="emoji-btn" data-act="toggleEndoPicker" title="Pick an emoji">' + d.emoji + '</button><input id="en-text" maxlength="' + ENDORSE_MAX_CHARS + '" placeholder="Write an endorsement" value="' + esc(d.text) + '">'
+      + '<span class="count" id="en-count">' + d.text.length + "/" + ENDORSE_MAX_CHARS + "</span>"
+      + (d.picker ? emojiPicker("pickEndoEmoji") : "") + "</div>"
+      + '<div class="muted" style="font-size:12.5px;margin-top:6px;">At least ' + ENDORSE_MIN_CHARS + " characters.</div>"
+      + '<div class="xp-note">' + (endorseXpLeft(S.viewAs) > 0 ? "<b>+" + XP.endorse + " XP</b> for you · " + endorseXpLeft(S.viewAs) + " of " + ENDORSE_XP_PER_WEEK + " left this week" : "You've used this week's " + ENDORSE_XP_PER_WEEK + " XP endorsements. You can still endorse, without XP.") + "</div>"
+      + '<div class="modal-actions"><button class="btn" data-act="closeEndorse">Cancel</button><button class="btn primary" id="en-save" data-act="saveEndorse"' + (d.text.trim().length >= ENDORSE_MIN_CHARS ? "" : " disabled") + ">Endorse</button></div></div></div>";
+  }
+  function popover() {
+    if (!U.pop) return "";
+    const pid = U.pop.pid;
+    const s = statusOf(pid);
+    if (!s) return "";
+    const top = Math.min(U.pop.y, window.innerHeight - 160);
+    const left = Math.min(Math.max(12, U.pop.x), window.innerWidth - 332);
+    return '<div class="pop" style="top:' + top + "px;left:" + left + 'px;" data-pop><div class="pop-h"><span class="e">' + s.emoji + '</span><div style="flex:1;min-width:0;">' + (s.text ? "<b>" + esc(s.text) + "</b>" : "") + '<div class="muted" style="font-size:12px;margin-top:' + (s.text ? 2 : 6) + 'px;">' + esc(PEOPLE[pid].full) + "</div></div>" + '<button class="iconbtn" data-act="closePop">' + I.x + "</button></div>"
+      + "</div>";
+  }
+  function statusModal() {
+    if (!U.modal) return "";
+    const d = U.modal;
+    const nextSession = upcomingSessions(S.viewAs)[0];
+    return '<div class="overlay" data-act="closeModalBg"><div class="modal" role="dialog" aria-label="Set a status">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;"><h3>Set a status</h3><button class="iconbtn" data-act="closeModal">' + I.xL + "</button></div>"
+      + '<div class="sfield"><button class="emoji-btn" data-act="togglePicker" title="Pick an emoji">' + (d.emoji || I.smile) + '</button><input id="st-text" maxlength="100" placeholder="Update your status" value="' + esc(d.text) + '">'
+      + (d.emoji || d.text ? '<button class="iconbtn clear" data-act="resetField" title="Clear">' + I.x + "</button>" : "")
+      + (d.picker ? emojiPicker("pickEmoji") : "") + "</div>"
+      + '<div class="lbl">Clear after</div><select id="st-expiry">' + EXPIRY.map((x) => {
+        const disabled = x.key === "session" && !nextSession;
+        const text = x.key === "session" && nextSession ? x.label + " (" + dayLabel(nextSession.day) + ")" : x.label;
+        return '<option value="' + x.key + '"' + (d.expiry === x.key ? " selected" : "") + (disabled ? " disabled" : "") + ">" + text + "</option>";
+      }).join("") + "</select>"
+      + '<div class="modal-actions">' + (statusOf(S.viewAs) ? '<button class="btn ghost" data-act="clearStatus" style="margin-right:auto;">Clear status</button>' : "")
+      + '<button class="btn" data-act="closeModal">Cancel</button><button class="btn primary" id="st-save" data-act="saveStatus"' + (d.emoji || d.text.trim() ? "" : " disabled") + ">Save</button></div></div></div>";
+  }
+  function chat() {
+    const unreadTotal = Object.keys(S.unread).filter((k) => k.split("|").includes(S.viewAs)).reduce((n, k) => n + (S.unread[k] || 0), 0);
+    const fab = '<button class="fab" data-act="toggleChat" title="Messages">' + I.msg + '<span class="online"></span>' + (unreadTotal && !U.chat.open ? '<span class="unread">' + unreadTotal + "</span>" : "") + "</button>";
+    if (!U.chat.open) return fab;
+    let inner;
+    if (!U.chat.with) {
+      inner = '<div class="chat-h"><b style="flex:1;">Messages</b><button class="iconbtn" data-act="toggleChat">' + I.x + '</button></div><div class="chat-body" style="gap:2px;padding:8px;">'
+        + counterparts(S.viewAs).map((pid) => {
+          const s = statusOf(pid);
+          const msgs = S.threads[threadKey(pid, S.viewAs)] || [];
+          const last = msgs[msgs.length - 1];
+          const unread = S.unread[threadKey(pid, S.viewAs)] || 0;
+          return '<button class="contact" data-act="openChat" data-pid="' + pid + '">' + avatar(pid, 38, { mood: true }) + '<div style="flex:1;min-width:0;"><div><b style="font-size:13.5px;font-weight:500;">' + esc(PEOPLE[pid].full) + '</b> <span class="muted" style="font-size:11.5px;">' + PEOPLE[pid].role.toLowerCase() + "</span></div>"
+            + '<div class="sub">' + (s ? s.emoji + (s.text ? " " + esc(s.text) : "") : last ? esc(last.text) : "No messages yet") + "</div></div>"
+            + (unread ? '<span style="min-width:20px;height:20px;border-radius:10px;background:#ef4444;color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;">' + unread + "</span>" : "") + "</button>";
+        }).join("") + "</div>";
+    } else {
+      const pid = U.chat.with;
+      const s = statusOf(pid);
+      const msgs = S.threads[threadKey(pid, S.viewAs)] || [];
+      inner = '<div class="chat-h"><button class="iconbtn" data-act="chatBack">' + I.back + "</button>" + avatar(pid, 32, { mood: true }) + '<div style="flex:1;min-width:0;"><b>' + esc(PEOPLE[pid].full) + '</b><div class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (s ? s.emoji + (s.text ? " " + esc(s.text) : "") : PEOPLE[pid].role) + '</div></div><button class="iconbtn" data-act="toggleChat">' + I.x + "</button></div>"
+        + '<div class="chat-body" id="chat-body">' + (msgs.length ? msgs.map((m) => {
+          return '<div class="bubble ' + (m.from === S.viewAs ? "me" : "them") + '">' + esc(m.text) + "</div>";
+        }).join("") : '<div class="muted" style="font-size:12.5px;text-align:center;margin-top:30px;">No messages yet. Say hi 👋</div>')
+        + "</div>"
+        + '<div class="composer">'
+        + '<div class="composer-row"><textarea id="chat-input" placeholder="Write a message…">' + esc(U.chat.draft) + '</textarea><button class="btn primary" data-act="send" style="width:40px;padding:0;height:40px;">' + I.send + "</button></div></div>";
+    }
+    return '<div class="chat">' + inner + "</div>" + fab;
+  }
+  function demoBar() {
+    return '<div class="demo"><span style="opacity:.7;">Demo · view as</span><div class="dseg">'
+      + '<button class="' + (S.viewAs === "debora" ? "on" : "") + '" data-act="viewAs" data-pid="debora">Mentee</button>'
+      + '<button class="' + (S.viewAs === "marco" ? "on" : "") + '" data-act="viewAs" data-pid="marco">Mentor</button></div>'
+      + '<span style="opacity:.7;margin-left:6px;">' + dayLabel(S.day) + "</span>"
+      + '<button class="dbtn" data-act="nextDay" title="Move the demo clock forward one day">Next day →</button><button class="dbtn" data-act="reset">Reset</button></div>';
+  }
+
+  // ---------- XP, levels and profile frames (per account; Pack-wide, no HR settings) ----------
+  const LEVEL_XP = [0, 100, 300, 600, 1000, 1400, 1900, 2500]; // total XP needed for Level 1..8
+  const XP_RULES = [
+    { xp: 50, label: "Session done", detail: "Counts once attendance is confirmed. Not for chemistry sessions, check-ins or no-shows." },
+    { xp: 100, label: "5 sessions in a row", detail: "For mentees. Only your own reschedule or cancel restarts the count." },
+    { xp: 20, label: "Giving an endorsement", detail: "Up to 3 a week, no rollover. At least 20 characters." },
+    { xp: 30, label: "Finishing a story", detail: "First finish of each story only." },
+    { xp: 5, label: "Trivia", detail: "Once per trivia." },
+  ];
+  // Frames: the team's SVGs in ../../frames. Free, earned by a rule, or unlocked with XP from a level.
+  const FRAMES_ROOT = "../../frames/";
+  const FRAMES = [
+    { key: "silver-plate", name: "Silver plate", level: 1, price: 0 },
+    { key: "silver-cog", name: "Silver cog", level: 2, price: 100 },
+    { key: "silver-compass", name: "Silver compass", level: 2, price: 100 },
+    { key: "silver-studded", name: "Silver studded", level: 3, price: 200 },
+    { key: "silver-tech", name: "Silver tech", level: 3, price: 200 },
+    { key: "silver-shard", name: "Silver shard", level: 4, price: 250 },
+    { key: "gold-scalloped", name: "Gold scalloped", level: 1, earned: "Earned with 5 sessions in a row" },
+    { key: "gold-braided", name: "Gold braided", level: 5, price: 300 },
+    { key: "gold-lobed", name: "Gold lobed", level: 5, price: 300 },
+    { key: "gold-ruby", name: "Gold ruby", level: 6, price: 350 },
+    { key: "gold-sapphire", name: "Gold sapphire", level: 7, price: 450 },
+    { key: "gold-vine", name: "Gold vine", level: 7, price: 450 },
+  ];
+  const FRAME = Object.fromEntries(FRAMES.map((f) => [f.key, f]));
+  const levelOf = (total) => LEVEL_XP.reduce((lvl, need, i) => (total >= need ? i + 1 : lvl), 1);
+  const xpOf = (pid) => S.xp[pid];
+
+  const weekOf = (d) => Math.floor(d / 7);
+  const endorseXpLeft = (pid) => ENDORSE_XP_PER_WEEK - S.endorsements.filter((e) => e.from === pid && e.xp && weekOf(e.day) === weekOf(S.day)).length;
+  // Adds to both total (level) and balance (spendable); a crossed threshold queues the level-up moment.
+  function gainXp(pid, amount, label, day) {
+    const acc = xpOf(pid);
+    const before = levelOf(acc.total);
+    acc.total += amount;
+    acc.balance += amount;
+    acc.history.push({ day: day == null ? S.day : day, xp: amount, label });
+    const after = levelOf(acc.total);
+    if (after > before) S.levelUps[pid] = after;
+  }
+  function taleXpPill() {
+    if (isTalePreview()) return '<span class="xp-earned muted-pill">Previews don\'t earn XP</span>';
+    const run = taleRun();
+    return run.xpRunId === run.runId ? '<span class="xp-earned">+' + XP.tale + " XP earned</span>" : '<span class="xp-earned muted-pill">XP already earned for this story</span>';
+  }
+  function xpModal() {
+    if (!U.xpModal) return "";
+    const m = U.xpModal;
+    return '<div class="overlay"><div class="modal lvlup" role="dialog" aria-label="' + esc(m.title) + '" style="width:400px;"><div class="big">+' + m.xp + ' XP</div><h3>' + esc(m.title) + "</h3>"
+      + '<p class="muted" style="margin:6px 0 0;">' + esc(m.sub) + '</p><div class="modal-actions" style="justify-content:center;"><button class="btn primary" data-act="closeXpModal">Continue</button></div></div></div>';
+  }
+  function levelUpModal() {
+    const lvl = S.levelUps[S.viewAs];
+    if (!lvl || U.modal || U.endorse || U.unlock || U.xpModal || U.trivia) return "";
+    const fresh = FRAMES.filter((f) => f.level === lvl && f.price);
+    return '<div class="overlay"><div class="modal lvlup" role="dialog" aria-label="Level up" style="width:400px;"><div class="big">🎉</div><h3>You reached Level ' + lvl + "</h3>"
+      + '<p class="muted" style="margin:6px 0 0;">' + (fresh.length ? "New frame" + (fresh.length > 1 ? "s" : "") + " you can unlock: " + fresh.map((f) => "<b>" + esc(f.name) + "</b> · " + f.price + " XP").join(", ") : "Keep going for new frames.") + "</p>"
+      + '<div class="modal-actions" style="justify-content:center;"><button class="btn" data-act="closeLevelUp">Later</button><button class="btn primary" data-act="levelUpFrames">See frames</button></div></div></div>';
+  }
+  function sessionChangeModal() {
+    if (!U.sessionChange) return "";
+    const { id, kind } = U.sessionChange;
+    const sess = SESSIONS.find((x) => x.id === id);
+    const streak = S.streak[sess.mentee] || 0;
+    const isReschedule = kind === "reschedule";
+    const warn = !isMentor() && streak > 0
+      ? '<div class="xp-note" style="background:#fff7ed;border-radius:8px;padding:10px 12px;color:#9a3412;">🔥 This restarts your ' + streak + "-session streak. " + (STREAK_EVERY - (streak % STREAK_EVERY)) + " more in a row would earn +" + XP.streak + " XP.</div>"
+      : "";
+    return '<div class="overlay" data-act="closeSessionChangeBg"><div class="modal" role="dialog" style="width:440px;"><div style="display:flex;align-items:center;justify-content:space-between;"><h3>' + (isReschedule ? "Reschedule" : "Cancel") + ' this session?</h3><button class="iconbtn" data-act="closeSessionChange">' + I.xL + "</button></div>"
+      + '<p class="muted" style="margin:10px 0 0;font-size:14px;">Session with ' + esc(PEOPLE[otherIn(sess, S.viewAs)].full) + " · " + dayLabel(sess.day) + (isReschedule ? " → " + dayLabel(sess.day + 7) : "") + "</p>" + warn
+      + '<div class="modal-actions"><button class="btn" data-act="closeSessionChange">Keep session</button><button class="btn ' + (isReschedule ? "primary" : "danger") + '" data-act="confirmSessionChange">' + (isReschedule ? "Reschedule" : "Cancel session") + "</button></div></div></div>";
+  }
+
+  // ---------- Path drops: a fixed set every Monday, by the mentee's path; undone drops go at week end ----------
+  const TRIVIA = {
+    "trivia-1": { title: "Innovation basics", questions: [
+      { q: "What does “MVP” stand for in product work?", options: ["Minimum viable product", "Most valuable player", "Maximum value proposition"], answer: 0, why: "The smallest version of an idea that lets you learn from real users." },
+      { q: "In design thinking, which phase comes first?", options: ["Prototype", "Empathise", "Test"], answer: 1, why: "You start by understanding the people you're designing for." },
+      { q: "“Fail fast” mainly means…", options: ["Give up quickly", "Ship without testing", "Learn cheaply before investing more"], answer: 2, why: "Small, early experiments are cheaper than big late failures." },
+    ] },
+    "trivia-2": { title: "Ideas that stuck", questions: [
+      { q: "Post-it notes came from an experiment with…", options: ["A weak glue", "A printing error", "A paper shortage"], answer: 0, why: "3M's Spencer Silver made a glue that barely stuck; a colleague later used it for bookmarks." },
+      { q: "What is a “pre-mortem”?", options: ["A review after launch", "Imagining the project failed and asking why", "A risk score in a spreadsheet"], answer: 1, why: "Picturing failure up front surfaces risks people otherwise keep quiet about." },
+      { q: "Which rule helps brainstorming most?", options: ["Judge each idea right away", "Aim for one perfect idea", "Go for quantity, judge later"], answer: 2, why: "Separating idea generation from evaluation leads to more and better options." },
+    ] },
+  };
+  const FUN_FACTS = {
+    "fact-1": { teaser: "Where did Gmail come from?", fact: "Gmail started as a side project in Google's “20% time”, when engineers could spend a fifth of their week on their own ideas." },
+    "fact-2": { teaser: "What did the first webcam watch?", fact: "A coffee pot. In 1991, Cambridge researchers pointed a camera at it so nobody walked to an empty pot." },
+  };
+  // Week index (0 = week of Mon 19 Oct) → that week's drops.
+  const WEEKLY_DROPS = {
+    0: [{ type: "trivia", ref: "trivia-1" }, { type: "fact", ref: "fact-1" }, { type: "story", ref: "feedback" }],
+    1: [{ type: "trivia", ref: "trivia-2" }, { type: "fact", ref: "fact-2" }],
+  };
+  const DROP_META = {
+    trivia: { icon: "🧠", label: "Trivia", time: "1 min" },
+    fact: { icon: "💡", label: "Fun fact", time: "10 sec" },
+    story: { icon: "📖", label: "Story pill", time: "4 min" },
+  };
+  const dropKey = (drop) => "w" + weekOf(S.day) + "-" + drop.type + "-" + drop.ref;
+  const isDropDone = (drop) => !!S.drops.done[dropKey(drop)];
+
+  function dropsCard() {
+    const drops = WEEKLY_DROPS[weekOf(S.day)];
+    if (isMentor() || !drops || !drops.length) return "";
+    const rows = drops.map((d) => {
+      const m = DROP_META[d.type];
+      const done = isDropDone(d);
+      const title = d.type === "trivia" ? TRIVIA[d.ref].title : d.type === "fact" ? FUN_FACTS[d.ref].teaser : TALES ? TALES.story.title.en : "Story";
+      const xp = d.type === "trivia" ? '<span class="drop-xp">+' + XP.trivia + " XP</span>" : d.type === "story" ? '<span class="drop-xp">+' + XP.tale + " XP</span>" : "";
+      let action;
+      if (done && d.type === "trivia") action = '<span class="eq-badge">' + I.check + 'Done</span><button class="btn sm ghost" data-act="openTrivia" data-ref="' + d.ref + '">Replay</button>';
+      else if (done) action = '<span class="eq-badge">' + I.check + "Done</span>";
+      else if (d.type === "trivia") action = '<button class="btn sm" data-act="openTrivia" data-ref="' + d.ref + '">Start</button>';
+      else if (d.type === "fact") action = '<button class="btn sm" data-act="revealFact" data-ref="' + d.ref + '">Reveal</button>';
+      else action = '<button class="btn sm" data-act="openStory">Open</button>';
+      const reveal = d.type === "fact" && done ? '<div class="fact-reveal">' + esc(FUN_FACTS[d.ref].fact) + "</div>" : "";
+      return '<div class="drop-row"><span class="drop-icon">' + m.icon + '</span><div class="drop-main"><div class="drop-type">' + m.label + " · " + m.time + '</div><b>' + esc(title) + "</b>" + reveal + "</div>" + xp + '<div class="drop-act">' + action + "</div></div>";
+    }).join("");
+    return '<div class="block"><h2>This week · ' + esc(MENTEE_INFO[S.viewAs].path) + "</h2>" + rows + "</div>";
+  }
+
+  function triviaModal() {
+    if (!U.trivia) return "";
+    const t = TRIVIA[U.trivia.ref];
+    const i = U.trivia.idx;
+    const q = t.questions[i];
+    const picked = U.trivia.answers[i];
+    const isAnswered = picked != null;
+    const isLast = i === t.questions.length - 1;
+    const opts = q.options.map((o, k) => {
+      const cls = !isAnswered ? "" : k === q.answer ? " right" : k === picked ? " wrong" : " dim";
+      return '<button class="quiz-opt' + cls + '" data-act="answerTrivia" data-k="' + k + '"' + (isAnswered ? " disabled" : "") + ">" + esc(o) + "</button>";
+    }).join("");
+    return '<div class="overlay" data-act="closeTriviaBg"><div class="modal" role="dialog" aria-label="Trivia" style="width:520px;">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="drop-type">🧠 Trivia · ' + esc(MENTEE_INFO[S.viewAs].path) + "</div><h3>" + esc(t.title) + '</h3></div><button class="iconbtn" data-act="closeTrivia">' + I.xL + "</button></div>"
+      + '<div class="muted" style="font-size:12.5px;margin-top:14px;">Question ' + (i + 1) + " of " + t.questions.length + '</div><p class="quiz-q">' + esc(q.q) + '</p><div class="quiz-opts">' + opts + "</div>"
+      + (isAnswered ? '<div class="quiz-why ' + (picked === q.answer ? "ok" : "no") + '"><b>' + (picked === q.answer ? "Correct." : "Not quite.") + "</b> " + esc(q.why) + "</div>" : "")
+      + '<div class="modal-actions">' + (isAnswered ? '<button class="btn primary" data-act="' + (isLast ? "finishTrivia" : "nextTrivia") + '">' + (isLast ? "Finish" : "Next") + "</button>" : "") + "</div></div></div>";
+  }
+
+  function appearancePage() {
+    const acc = xpOf(S.viewAs);
+    const lvl = levelOf(acc.total);
+    const next = LEVEL_XP[lvl];
+    const floor = LEVEL_XP[lvl - 1];
+    const pct = next ? Math.round(((acc.total - floor) / (next - floor)) * 100) : 100;
+    const sel = U.appearanceSel || acc.equipped || "none";
+    const owned = (key) => acc.frames.includes(key);
+    // frameOnly: show the frame art alone (no profile picture), used in "Your frames".
+    const card = (f, frameOnly) => {
+      const isOwned = f.key === "none" || owned(f.key);
+      const isEquipped = (acc.equipped || "none") === f.key;
+      const levelLocked = f.level > lvl;
+      let foot;
+      if (isEquipped) foot = '<span class="eq-badge">' + I.check + "Equipped</span>";
+      else if (isOwned) foot = '<button class="btn sm" data-act="equipFrame" data-key="' + f.key + '">Equip</button>';
+      else if (levelLocked) foot = '<span class="lock-badge">🔒 Level ' + f.level + "</span>";
+      else foot = '<button class="btn sm" data-act="askUnlock" data-key="' + f.key + '">Unlock · ' + f.price + " XP</button>";
+      const sub = f.key === "none" ? "Plain avatar" : f.earned && isOwned ? f.earned : isOwned ? "Owned" : levelLocked ? f.price + " XP" : "Available";
+      return '<div class="frame-card' + (sel === f.key ? " on" : "") + (levelLocked && !isOwned ? " locked" : "") + '" data-act="previewFrame" data-key="' + f.key + '">'
+        + '<div class="frame-prev">' + (!frameOnly ? avatar(S.viewAs, 64, { frame: f.key, noLevel: true }) : f.key === "none" ? '<span class="frame-empty"></span>' : '<img class="frame-only" src="' + FRAMES_ROOT + f.key + '.svg" alt="">') + "</div>"
+        + '<div class="frame-name">' + esc(f.name) + '</div><div class="frame-sub">' + esc(sub) + '</div><div class="frame-foot">' + foot + "</div></div>";
+    };
+    const ownedFrames = [{ key: "none", name: "No frame", level: 1 }].concat(FRAMES.filter((f) => owned(f.key)));
+    const moreFrames = FRAMES.filter((f) => !owned(f.key));
+    const history = acc.history.slice().reverse().map((h) => '<div class="xp-row"><span class="xp-amt ' + (h.xp < 0 ? "neg" : "") + '">' + (h.xp > 0 ? "+" : "") + h.xp + '</span><span style="flex:1;">' + esc(h.label) + '</span><span class="muted">' + dayLabel(h.day) + "</span></div>").join("");
+    const selName = sel === "none" ? "No frame" : FRAME[sel].name;
+    const selAction = sel === (acc.equipped || "none") ? '<span class="eq-badge">' + I.check + "Equipped</span>"
+      : sel === "none" || owned(sel) ? '<button class="btn primary sm" data-act="equipFrame" data-key="' + sel + '">Equip ' + esc(selName) + "</button>" : "";
+    return '<div class="pref-tabs"><button data-act="prefSoon">Profile</button><button data-act="prefSoon">Notifications</button><button class="on">Appearance</button></div>'
+      + '<div class="appear"><div class="appear-main">'
+      + '<div class="card2 appear-hero"><div class="frame-prev big">' + avatar(S.viewAs, 96, { frame: sel, noLevel: true }) + "</div>"
+      + '<div style="flex:1;min-width:0;"><div class="muted" style="font-size:13px;">Previewing: <b style="color:var(--tg-900);">' + esc(selName) + "</b></div>"
+      + '<div class="lvl-line"><span class="lvl-pill">Level ' + lvl + "</span><b>" + acc.total.toLocaleString("en-US") + ' XP</b><span class="muted">' + (next ? (next - acc.total) + " XP to Level " + (lvl + 1) : "Top level") + "</span></div>"
+      + '<div class="xp-bar"><i style="width:' + pct + '%;"></i></div></div>'
+      + '<div style="align-self:flex-start;">' + selAction + "</div></div>"
+      + '<div class="block"><h2>Your frames (' + (ownedFrames.length - 1) + ')</h2><div class="frame-grid">' + ownedFrames.map((f) => card(f, true)).join("") + "</div></div>"
+      + '<div class="block"><h2>More frames</h2><div class="frame-grid">' + moreFrames.map((f) => card(f)).join("") + "</div></div></div>"
+      + '<div class="appear-side"><div class="block"><h2>How to earn XP</h2>' + XP_RULES.map((r) => '<div class="rule"><span class="xp-amt">+' + r.xp + '</span><div><b>' + esc(r.label) + '</b><div class="muted" style="font-size:12.5px;">' + esc(r.detail) + "</div></div></div>").join("") + "</div>"
+      + '<div class="block"><h2>XP history</h2>' + history + "</div></div></div>";
+  }
+
+  function unlockModal() {
+    if (!U.unlock) return "";
+    const f = FRAME[U.unlock];
+    const acc = xpOf(S.viewAs);
+    const after = acc.balance - f.price;
+    return '<div class="overlay" data-act="closeUnlockBg"><div class="modal" role="dialog" aria-label="Unlock frame" style="width:420px;">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;"><h3>Unlock ' + esc(f.name) + ' frame</h3><button class="iconbtn" data-act="closeUnlock">' + I.xL + "</button></div>"
+      + '<div style="display:flex;align-items:center;gap:16px;margin-top:18px;">' + avatar(S.viewAs, 64, { frame: f.key, noLevel: true })
+      + '<div style="font-size:14px;line-height:1.6;">Costs <b>' + f.price + " XP</b><br>Balance after: <b>" + after + ' XP</b><br><span class="muted">Your level stays the same.</span></div></div>'
+      + '<div class="modal-actions"><button class="btn" data-act="closeUnlock">Cancel</button><button class="btn primary" data-act="unlockFrame"' + (after < 0 ? " disabled" : "") + ">Unlock</button></div></div></div>";
+  }
+
+  function render() {
+    syncSessions();
+    const pages = { overview: () => (isMentor() ? mentorOverview() : menteeOverview()), events: eventsPage, library: libraryPage, chemistry: chemistryPage, menteeProfile: menteeProfilePage, story: storyPage, appearance: appearancePage };
+    const chatScroll = document.getElementById("chat-body");
+    const wasAtBottom = !chatScroll || chatScroll.scrollHeight - chatScroll.scrollTop - chatScroll.clientHeight < 40;
+    const focused = document.activeElement && document.activeElement.id ? { id: document.activeElement.id, at: document.activeElement.selectionStart } : null;
+    const scroller = document.querySelector(".scroll");
+    const scrollTop = scroller ? scroller.scrollTop : 0;
+    document.getElementById("root").innerHTML = '<div class="app">' + sidebar() + "<main>" + pageHead() + '<div class="scroll"><div class="frame">' + (pages[S.page] || pages.overview)() + "</div></div></main></div>"
+      + popover() + statusModal() + endorseModal() + unlockModal() + sessionChangeModal() + triviaModal() + xpModal() + levelUpModal() + chat() + demoBar() + (U.toast ? '<div class="toast">' + I.info + esc(U.toast) + "</div>" : "");
+    const newScroller = document.querySelector(".scroll");
+    if (newScroller) newScroller.scrollTop = scrollTop;
+    const cb = document.getElementById("chat-body");
+    if (cb && wasAtBottom) cb.scrollTop = cb.scrollHeight;
+    // A toast closing re-renders mid-typing, so put the caret back.
+    const refocus = focused && document.getElementById(focused.id);
+    if (refocus) { refocus.focus(); if (focused.at != null && refocus.setSelectionRange) refocus.setSelectionRange(focused.at, focused.at); }
+  }
+
+  // ---------- Actions ----------
+  let toastTimer;
+  const toast = (text) => { U.toast = text; clearTimeout(toastTimer); toastTimer = setTimeout(() => { U.toast = ""; render(); }, 2800); };
+  const commit = () => { save(); render(); };
+  const resetChat = () => ({ open: false, with: null, draft: "" });
+
+  const openModal = (emoji) => {
+    const cur = statusOf(S.viewAs);
+    U.modal = emoji
+      ? { emoji, text: "", expiry: "today", picker: false }
+      : cur ? { emoji: cur.emoji, text: cur.text, expiry: cur.expiry, picker: false } : { emoji: "", text: "", expiry: "today", picker: false };
+    U.userMenu = false;
+    render();
+    setTimeout(() => { const el = document.getElementById("st-text"); if (el) el.focus(); }, 0);
+  };
+
+  const send = () => {
+    const pid = U.chat.with;
+    const text = U.chat.draft.trim();
+    if (!pid || !text) return;
+    const key = threadKey(pid, S.viewAs);
+    S.threads[key] = (S.threads[key] || []).concat([{ from: S.viewAs, text, day: S.day }]);
+    U.chat.draft = "";
+    commit();
+  };
+
+  const ACTIONS = {
+    nav: (el) => { S.page = el.dataset.page; S.profileId = null; U.pop = null; commit(); const sc = document.querySelector(".scroll"); if (sc) sc.scrollTop = 0; },
+    openProfile: (el) => { S.page = "menteeProfile"; S.profileId = el.dataset.pid; U.pop = null; commit(); const sc = document.querySelector(".scroll"); if (sc) sc.scrollTop = 0; },
+    openEndorse: (el) => {
+      U.endorse = { to: el.dataset.pid, emoji: DEFAULT_ENDORSE_EMOJI, text: "", picker: false };
+      U.pop = null;
+      render();
+      setTimeout(() => { const i = document.getElementById("en-text"); if (i) i.focus(); }, 0);
+    },
+    closeEndorse: () => { U.endorse = null; render(); },
+    closeEndorseBg: (el, ev) => { if (ev.target === el) { U.endorse = null; render(); } },
+    toggleEndoPicker: () => { U.endorse.picker = !U.endorse.picker; render(); },
+    pickEndoEmoji: (el) => { Object.assign(U.endorse, { emoji: el.dataset.e, picker: false }); render(); setTimeout(() => { const i = document.getElementById("en-text"); if (i) i.focus(); }, 0); },
+    saveEndorse: () => {
+      const { to, emoji } = U.endorse;
+      const label = U.endorse.text.trim();
+      if (label.length < ENDORSE_MIN_CHARS) return;
+      const xp = endorseXpLeft(S.viewAs) > 0 ? XP.endorse : 0;
+      S.endorsements.push({ to, emoji, label, from: S.viewAs, day: S.day, xp });
+      if (xp) gainXp(S.viewAs, xp, "Endorsed " + PEOPLE[to].full);
+      U.endorse = null;
+      toast(xp ? "+" + xp + " XP · You endorsed " + PEOPLE[to].first : "You endorsed " + PEOPLE[to].first + ". No XP: this week's " + ENDORSE_XP_PER_WEEK + " are used.");
+      commit();
+    },
+    togglePast: () => { U.pastOpen = !U.pastOpen; render(); },
+    askSessionChange: (el) => { U.sessionChange = { id: el.dataset.id, kind: el.dataset.kind }; render(); },
+    closeSessionChange: () => { U.sessionChange = null; render(); },
+    closeSessionChangeBg: (el, ev) => { if (ev.target === el) { U.sessionChange = null; render(); } },
+    confirmSessionChange: () => {
+      const { id, kind } = U.sessionChange;
+      const sess = SESSIONS.find((x) => x.id === id);
+      const byMentee = !isMentor();
+      if (kind === "reschedule") S.sessionDays[id] = sess.day + 7;
+      else S.cancelled.push(id);
+      if (byMentee) S.streak[sess.mentee] = 0;
+      U.sessionChange = null;
+      toast((kind === "reschedule" ? "Session moved to " + dayLabel(sess.day + 7) + "." : "Session cancelled.") + (byMentee ? " Your streak restarted." : ""));
+      commit();
+    },
+    closeXpModal: () => { U.xpModal = null; render(); },
+    openTrivia: (el) => { U.trivia = { ref: el.dataset.ref, idx: 0, answers: [] }; render(); },
+    closeTrivia: () => { U.trivia = null; render(); },
+    closeTriviaBg: (el, ev) => { if (ev.target === el) { U.trivia = null; render(); } },
+    answerTrivia: (el) => { U.trivia.answers[U.trivia.idx] = Number(el.dataset.k); render(); },
+    nextTrivia: () => { U.trivia.idx += 1; render(); },
+    finishTrivia: () => {
+      const { ref, answers } = U.trivia;
+      const t = TRIVIA[ref];
+      const right = t.questions.filter((q, i) => answers[i] === q.answer).length;
+      const drop = (WEEKLY_DROPS[weekOf(S.day)] || []).find((d) => d.type === "trivia" && d.ref === ref);
+      if (drop) S.drops.done[dropKey(drop)] = true;
+      U.trivia = null;
+      // +5 XP once per trivia; replays earn nothing.
+      if (!S.drops.triviaXp.includes(ref)) {
+        S.drops.triviaXp.push(ref);
+        gainXp(S.viewAs, XP.trivia, "Trivia · " + t.title);
+        U.xpModal = { xp: XP.trivia, title: "Trivia done", sub: right + " of " + t.questions.length + " correct" };
+      }
+      commit();
+    },
+    revealFact: (el) => {
+      const drop = (WEEKLY_DROPS[weekOf(S.day)] || []).find((d) => d.type === "fact" && d.ref === el.dataset.ref);
+      if (drop) S.drops.done[dropKey(drop)] = true;
+      commit();
+    },
+    closeLevelUp: () => { delete S.levelUps[S.viewAs]; commit(); },
+    levelUpFrames: () => { delete S.levelUps[S.viewAs]; S.page = "appearance"; U.appearanceSel = null; commit(); const sc = document.querySelector(".scroll"); if (sc) sc.scrollTop = 0; },
+    openAppearance: () => {
+      S.page = "appearance";
+      Object.assign(U, { appearanceSel: null, userMenu: false, pop: null });
+      commit();
+      const sc = document.querySelector(".scroll"); if (sc) sc.scrollTop = 0;
+    },
+    previewFrame: (el) => { U.appearanceSel = el.dataset.key; render(); },
+    equipFrame: (el) => {
+      const key = el.dataset.key;
+      xpOf(S.viewAs).equipped = key === "none" ? null : key;
+      U.appearanceSel = key;
+      toast(key === "none" ? "Frame removed." : FRAME[key].name + " frame equipped.");
+      commit();
+    },
+    askUnlock: (el) => { U.unlock = el.dataset.key; render(); },
+    closeUnlock: () => { U.unlock = null; render(); },
+    closeUnlockBg: (el, ev) => { if (ev.target === el) { U.unlock = null; render(); } },
+    unlockFrame: () => {
+      const f = FRAME[U.unlock];
+      const acc = xpOf(S.viewAs);
+      if (acc.balance < f.price) return;
+      acc.balance -= f.price;
+      acc.frames.push(f.key);
+      acc.history.push({ day: S.day, xp: -f.price, label: "Unlocked " + f.name + " frame" });
+      U.unlock = null;
+      U.appearanceSel = f.key;
+      toast(f.name + " frame unlocked.");
+      commit();
+    },
+    prefSoon: () => { toast("Not part of this prototype."); render(); },
+    openStory: () => {
+      S.page = "story";
+      if (isTalePreview()) U.taleRun = { started: false, choices: {}, reflection: "", lang: U.taleRun.lang, runId: 0 };
+      U.pop = null;
+      commit();
+      const sc = document.querySelector(".scroll"); if (sc) sc.scrollTop = 0;
+    },
+    taleStart: () => { taleRun().started = true; commit(); const sc = document.querySelector(".scroll"); if (sc) sc.scrollTop = 0; },
+    taleChoose: (el) => {
+      const run = taleRun();
+      run.choices[el.dataset.beat] = el.dataset.opt;
+      const isFinished = taleChoices().every((b) => run.choices[b.id]);
+      const acc = xpOf(S.viewAs);
+      // XP only for a mentee's first finish of each story; previews and replays earn nothing.
+      const storyDrop = (WEEKLY_DROPS[weekOf(S.day)] || []).find((d) => d.type === "story" && d.ref === TALES.story.id);
+      if (isFinished && !isTalePreview() && storyDrop) S.drops.done[dropKey(storyDrop)] = true;
+      if (isFinished && !isTalePreview() && !acc.talesDone.includes(TALES.story.id)) {
+        acc.talesDone.push(TALES.story.id);
+        run.xpRunId = run.runId;
+        gainXp(S.viewAs, XP.tale, "Finished “" + TALES.story.title.en + "”");
+        U.xpModal = { xp: XP.tale, title: "Story finished", sub: TALES.story.title.en };
+      }
+      commit();
+      // Land on the reaction that replaced the choice, not at the bottom.
+      const target = document.getElementById("tl-r-" + el.dataset.beat);
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    taleRestart: () => {
+      const run = taleRun();
+      Object.assign(run, { started: true, choices: {}, reflection: "", runId: run.runId + 1 });
+      commit();
+      const sc = document.querySelector(".scroll"); if (sc) sc.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    toggleTaleLang: () => { U.taleLangOpen = !U.taleLangOpen; render(); },
+    taleLang: (el) => { taleRun().lang = el.dataset.lang; U.taleLangOpen = false; commit(); },
+    taleShare: () => {
+      const next = upcomingSessions(S.viewAs)[0];
+      if (!next) return;
+      const run = S.tale;
+      S.taleShared = { runId: run.runId, sessionId: next.id, when: dayLabel(next.day) + " · " + next.time.split(" ")[0], path: talePath(), endingTitle: taleEnding().title.en, reflection: run.reflection.trim() };
+      commit();
+      const box = document.getElementById("tl-session"); if (box) box.scrollIntoView({ behavior: "smooth", block: "center" });
+    },
+    toggleNav: () => { U.navOpen = !U.navOpen; render(); },
+    userMenu: () => { U.userMenu = !U.userMenu; render(); },
+    openStatus: () => openModal(null),
+    quick: (el) => openModal(el.dataset.e),
+    closeModal: () => { U.modal = null; render(); },
+    closeModalBg: (el, ev) => { if (ev.target === el) { U.modal = null; render(); } },
+    togglePicker: () => { U.modal.picker = !U.modal.picker; render(); },
+    pickEmoji: (el) => { Object.assign(U.modal, { emoji: el.dataset.e, picker: false }); render(); setTimeout(() => { const i = document.getElementById("st-text"); if (i) i.focus(); }, 0); },
+    resetField: () => { Object.assign(U.modal, { emoji: "", text: "", picker: false }); render(); },
+    saveStatus: () => {
+      const d = U.modal;
+      const text = d.text.trim();
+      if (!d.emoji && !text) return;
+      const emoji = d.emoji || DEFAULT_EMOJI;
+      S.statuses[S.viewAs] = { emoji, text, expiry: d.expiry, setDay: S.day, expiresDay: expiresDayFor(d.expiry, S.viewAs) };
+      U.modal = null;
+      toast("Status updated.");
+      commit();
+    },
+    clearStatus: () => { delete S.statuses[S.viewAs]; U.modal = null; U.userMenu = false; toast("Status cleared."); commit(); },
+    pop: (el) => {
+      const r = el.getBoundingClientRect();
+      U.pop = U.pop && U.pop.pid === el.dataset.pid ? null : { pid: el.dataset.pid, x: r.left, y: r.bottom + 8 };
+      render();
+    },
+    closePop: () => { U.pop = null; render(); },
+    toggleChat: () => { U.chat = U.chat.open ? resetChat() : Object.assign(resetChat(), { open: true }); U.pop = null; render(); },
+    openChat: (el) => { U.chat = { open: true, with: el.dataset.pid, draft: "" }; S.unread[threadKey(el.dataset.pid, S.viewAs)] = 0; U.pop = null; commit(); },
+    chatBack: () => { U.chat = Object.assign(resetChat(), { open: true }); render(); },
+    send,
+    scrollMentor: () => { const el = document.getElementById("my-mentor"); if (el) el.scrollIntoView({ behavior: "smooth" }); },
+    hideChem: () => { S.hideChemAlert = true; commit(); },
+    week: (el) => { const dir = Number(el.dataset.dir); S.weekOffset = dir === 0 ? Math.floor(S.day / 7) : S.weekOffset + dir; commit(); },
+    menteesTab: (el) => { U.menteesTab = el.dataset.tab; render(); },
+    viewAs: (el) => {
+      S.viewAs = el.dataset.pid;
+      if ((S.page === "chemistry" || S.page === "menteeProfile") && !isMentor()) { S.page = "overview"; S.profileId = null; }
+      if (S.page === "story") S.page = "library";
+      Object.assign(U, { userMenu: false, pop: null, modal: null, endorse: null, chat: resetChat() });
+      toast("You're now using Pack as " + me().role);
+      commit();
+    },
+    nextDay: () => {
+      S.day += 1;
+      S.weekOffset = Math.floor(S.day / 7);
+      U.pop = null;
+      // Rule-based endorsements land once their session is over.
+      const newlyEarned = AUTO_AWARDS.filter((a) => {
+        const sess = SESSIONS.find((x) => x.id === a.sessionId);
+        return !S.cancelled.includes(sess.id) && sess.day < S.day && !S.endorsements.some((e) => e.to === a.to && e.key === a.key);
+      });
+      newlyEarned.forEach((a) => S.endorsements.push(earned(a.to, a.key, S.day)));
+      // Sessions that ended yesterday count as done (attendance confirmed in this demo).
+      const mine = [];
+      activeSessions().filter((x) => x.day === S.day - 1).forEach((x) => {
+        gainXp(x.mentee, XP.session, "Session with " + PEOPLE[x.mentor].full, x.day);
+        gainXp(x.mentor, XP.session, "Session with " + PEOPLE[x.mentee].full, x.day);
+        if (S.viewAs === x.mentee || S.viewAs === x.mentor) mine.push("+" + XP.session + " XP · Session with " + PEOPLE[otherIn(x, S.viewAs)].first);
+        S.streak[x.mentee] = (S.streak[x.mentee] || 0) + 1;
+        if (S.streak[x.mentee] % STREAK_EVERY === 0) {
+          gainXp(x.mentee, XP.streak, S.streak[x.mentee] + " sessions in a row", x.day);
+          if (S.viewAs === x.mentee) mine.push("+" + XP.streak + " XP · " + S.streak[x.mentee] + " in a row 🔥");
+        }
+      });
+      toast("It's now " + dayLabel(S.day) + "." + (mine.length ? " " + mine.join(" · ") : "") + (newlyEarned.length ? " New endorsements: " + newlyEarned.map((a) => PEOPLE[a.to].first + " " + EARNED[a.key].emoji + " " + EARNED[a.key].label).join(", ") + "." : ""));
+      commit();
+    },
+    reset: () => { S = SEED(); Object.assign(U, { userMenu: false, pop: null, modal: null, endorse: null, chat: resetChat() }); toast("Demo reset."); commit(); },
+  };
+
+  document.addEventListener("click", (ev) => {
+    const el = ev.target.closest("[data-act]");
+    if (el && !el.disabled && ACTIONS[el.dataset.act]) { ACTIONS[el.dataset.act](el, ev); return; }
+    let changed = false;
+    if (U.pop && !ev.target.closest("[data-pop]")) { U.pop = null; changed = true; }
+    if (U.userMenu && !ev.target.closest(".sb-foot")) { U.userMenu = false; changed = true; }
+    if (U.taleLangOpen && !ev.target.closest(".tl-lang-wrap")) { U.taleLangOpen = false; changed = true; }
+    if (changed) render();
+  });
+  document.addEventListener("input", (ev) => {
+    const t = ev.target;
+    if (t.id === "st-text") {
+      U.modal.text = t.value;
+      const saveBtn = document.getElementById("st-save");
+      if (saveBtn) saveBtn.disabled = !(U.modal.emoji || t.value.trim());
+    }
+    if (t.id === "en-text") {
+      U.endorse.text = t.value;
+      document.getElementById("en-count").textContent = t.value.length + "/" + ENDORSE_MAX_CHARS;
+      document.getElementById("en-save").disabled = t.value.trim().length < ENDORSE_MIN_CHARS;
+    }
+    if (t.id === "tl-reflection") S.tale.reflection = t.value;
+    if (t.id === "chat-input") U.chat.draft = t.value;
+  });
+  document.addEventListener("change", (ev) => { if (ev.target.id === "st-expiry") U.modal.expiry = ev.target.value; });
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") {
+      if (U.modal && U.modal.picker) U.modal.picker = false;
+      else if (U.endorse && U.endorse.picker) U.endorse.picker = false;
+      else if (U.modal) U.modal = null;
+      else if (U.endorse) U.endorse = null;
+      else if (U.unlock) U.unlock = null;
+      else if (U.sessionChange) U.sessionChange = null;
+      else if (U.xpModal) U.xpModal = null;
+      else if (U.trivia) U.trivia = null;
+      else if (U.taleLangOpen) U.taleLangOpen = false;
+      else if (U.pop) U.pop = null;
+      else if (U.userMenu) U.userMenu = false;
+      else return;
+      render();
+    }
+    if (ev.key === "Enter" && !ev.shiftKey && ev.target.id === "chat-input") { ev.preventDefault(); send(); }
+    if (ev.key === "Enter" && ev.target.id === "st-text") { ev.preventDefault(); ACTIONS.saveStatus(); }
+    if (ev.key === "Enter" && ev.target.id === "en-text") { ev.preventDefault(); ACTIONS.saveEndorse(); }
+  });
+  window.addEventListener("resize", () => { if (U.pop) { U.pop = null; render(); } });
+
+  render();
+})();
+</script>
+</body>
+</html>

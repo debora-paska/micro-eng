@@ -1,0 +1,11 @@
+.DS_Store
+.env*
+.fal.env
+.thumbnail
+# Copied admin prototype (assessment_development-02) leftovers — not published
+_ds/
+uploads/assessment_modular-report-03/
+uploads/micro-engagement-01/src/
+uploads/micro-engagement-01/support.js
+# Third-party licensed photos — not published (avatars fall back to initials)
+uploads/micro-engagement-01/assets/people/
